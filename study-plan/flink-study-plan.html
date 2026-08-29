@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apache Flink — A Local-First Study Plan</title>
+<title>Apache Flink — A Local-First Course</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,6 +21,7 @@
   --stream:#BFD9DD;
   --code-bg:#0F2A30;
   --code-ink:#DCE9EB;
+  --out-bg:#E9F1F2;
   --radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -30,7 +31,7 @@ body{
   background:var(--paper);
   color:var(--ink);
   font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-  font-size:16px;line-height:1.6;
+  font-size:16px;line-height:1.65;
 }
 ::selection{background:var(--flink-soft)}
 
@@ -41,7 +42,7 @@ body{
   border-bottom:1px solid var(--line);
 }
 .topbar-inner{
-  max-width:980px;margin:0 auto;padding:10px 24px;
+  max-width:1020px;margin:0 auto;padding:10px 24px;
   display:flex;align-items:center;gap:16px;
 }
 .topbar .brand{
@@ -51,11 +52,11 @@ body{
 .topbar .brand em{color:var(--flink);font-style:normal}
 .streambar{
   position:relative;flex:1;height:14px;border-radius:7px;
-  background:var(--panel);border:1px solid var(--line);overflow:visible;
+  background:var(--panel);border:1px solid var(--line);
 }
 .streambar .fill{
   position:absolute;inset:2px auto 2px 2px;width:0%;
-  min-width:0;border-radius:5px;
+  border-radius:5px;
   background:linear-gradient(90deg,var(--petrol) 0%,var(--petrol) 70%,var(--flink) 100%);
   transition:width .35s ease;
 }
@@ -66,7 +67,7 @@ body{
   border-top:8px solid var(--flink);
 }
 .pct{
-  font-family:'IBM Plex Mono',monospace;font-size:13px;min-width:9ch;text-align:right;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;min-width:11ch;text-align:right;
   color:var(--petrol-deep);white-space:nowrap;
 }
 .reset-btn{
@@ -75,10 +76,10 @@ body{
   padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;
 }
 .reset-btn:hover{border-color:var(--flink);color:var(--flink)}
-.reset-btn:focus-visible,.chk input:focus-visible,a:focus-visible{outline:2px solid var(--flink);outline-offset:2px}
+.reset-btn:focus-visible,input[type=checkbox]:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--flink);outline-offset:2px}
 
 /* ---------- page frame ---------- */
-.page{max-width:980px;margin:0 auto;padding:0 24px 120px}
+.page{max-width:1020px;margin:0 auto;padding:0 24px 120px}
 
 /* ---------- hero ---------- */
 .hero{padding:72px 0 48px;border-bottom:1px solid var(--line)}
@@ -88,14 +89,12 @@ body{
 }
 .hero h1{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
-  font-size:clamp(40px,7vw,72px);line-height:1.02;letter-spacing:-.02em;
-  max-width:14ch;
+  font-size:clamp(38px,6.5vw,68px);line-height:1.02;letter-spacing:-.02em;
+  max-width:16ch;
 }
 .hero h1 .accent{color:var(--flink)}
-.hero .standfirst{max-width:62ch;margin-top:24px;color:var(--muted);font-size:17px}
-.hero .meta{
-  display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;
-}
+.hero .standfirst{max-width:68ch;margin-top:24px;color:var(--muted);font-size:17px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
 .hero .meta span{
   font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--petrol-deep);
   border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;
@@ -103,11 +102,8 @@ body{
 
 /* ---------- module spine layout ---------- */
 .modules{position:relative;padding-top:56px}
-.modules::before{ /* the stream spine */
-  content:"";position:absolute;left:19px;top:0;bottom:0;width:2px;
-  background:var(--stream);
-}
-.module{position:relative;padding:0 0 64px 64px}
+.modules::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:2px;background:var(--stream)}
+.module{position:relative;padding:0 0 72px 64px}
 .module .node{
   position:absolute;left:0;top:2px;width:40px;height:40px;border-radius:50%;
   background:var(--panel);border:2px solid var(--stream);
@@ -124,85 +120,117 @@ body{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
   font-size:clamp(24px,4vw,34px);letter-spacing:-.01em;margin:4px 0 6px;
 }
-.module-head .modprog{
-  font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--petrol);
-}
-.module-head p.intro{color:var(--muted);max-width:66ch;margin:14px 0 0}
+.module-head .modprog{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--petrol)}
+.module-head p.intro{color:var(--muted);max-width:70ch;margin:14px 0 0}
 
 .block{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-  padding:22px 24px;margin-top:22px}
+  padding:24px 26px;margin-top:22px}
 .block h3{
   font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--petrol);margin-bottom:14px;
 }
-.block p{margin-bottom:12px}
+.block p{margin-bottom:12px;max-width:78ch}
 .block p:last-child{margin-bottom:0}
-.block ul.plain{list-style:none;margin:0}
-.block ul.plain li{padding:2px 0}
+.block ul.bullets{margin:0 0 12px 20px}
+.block ul.bullets li{margin-bottom:6px;max-width:74ch}
 
-/* snowflake-brain asides */
+/* teaching asides */
 .anchor-note{
   border-left:3px solid var(--flink);background:var(--flink-soft);
-  border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:15px;
+  border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px;max-width:78ch;
 }
 .anchor-note strong{color:var(--flink)}
+.gotcha{
+  border-left:3px solid var(--petrol);background:var(--out-bg);
+  border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:15px;max-width:78ch;
+}
+.gotcha strong{color:var(--petrol-deep)}
 
-/* checklist rows */
+/* numbered lab steps */
+.step{border-left:2px solid var(--line);padding:4px 0 10px 20px;margin:22px 0}
+.step h4{
+  font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:16.5px;margin-bottom:8px;
+}
+.step h4 .n{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;color:var(--flink);
+  letter-spacing:.08em;margin-right:8px;
+}
+.stepdone{display:flex;align-items:flex-start;gap:10px;margin-top:12px;
+  background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:9px 12px}
+.stepdone label{cursor:pointer;font-size:14.5px}
+.stepdone.checked label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--stream)}
+
+/* checklist rows (concepts) */
 .chk{list-style:none}
 .chk li{display:flex;align-items:flex-start;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line)}
 .chk li:last-child{border-bottom:none}
-.chk input[type=checkbox]{
+.chk label{cursor:pointer}
+.chk li.checked label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--stream)}
+input[type=checkbox].box{
   appearance:none;-webkit-appearance:none;flex:0 0 auto;
   width:19px;height:19px;margin-top:3px;border:2px solid var(--stream);
   border-radius:5px;cursor:pointer;position:relative;background:var(--panel);
   transition:background .15s,border-color .15s;
 }
-.chk input[type=checkbox]:checked{background:var(--flink);border-color:var(--flink)}
-.chk input[type=checkbox]:checked::after{
+input[type=checkbox].box:checked{background:var(--flink);border-color:var(--flink)}
+input[type=checkbox].box:checked::after{
   content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
   border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
 }
-.chk label{cursor:pointer}
-.chk li.checked label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--stream)}
-.chk .hint{display:block;font-size:13.5px;color:var(--muted)}
-.chk li.checked .hint{text-decoration:none}
 
-/* code */
+/* code + output */
 pre{
   background:var(--code-bg);color:var(--code-ink);
   font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.55;
   border-radius:8px;padding:16px 18px;overflow-x:auto;margin:12px 0;
 }
+pre .c{color:#7FA3AA}
+pre.out{
+  background:var(--out-bg);color:var(--petrol-deep);border:1px solid var(--line);
+}
+.file-label,.out-label{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  letter-spacing:.08em;color:var(--muted);margin:10px 0 -6px;
+}
+.out-label{color:var(--petrol)}
 code.inline{
   font-family:'IBM Plex Mono',monospace;font-size:.9em;
   background:#E7EFF0;border-radius:4px;padding:1px 5px;color:var(--petrol-deep);
 }
-pre .c{color:#7FA3AA} /* comments */
+
+/* tables for teaching */
+table.teach{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+table.teach th,table.teach td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+table.teach th{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--petrol);background:var(--out-bg);font-weight:500;
+}
+table.teach td code{font-family:'IBM Plex Mono',monospace;font-size:.88em;color:var(--petrol-deep)}
 
 a{color:var(--petrol);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--flink)}
 
-/* self-test details */
-details.selftest{border-top:1px dashed var(--line);margin-top:14px;padding-top:12px}
-details.selftest summary{
-  cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--muted);
-}
+/* self-test */
+details.selftest{border-top:1px dashed var(--line);margin-top:16px;padding-top:12px}
+details.selftest summary{cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--muted)}
 details.selftest[open] summary{color:var(--flink)}
 details.selftest ol{margin:10px 0 0 22px}
-details.selftest li{margin-bottom:6px}
+details.selftest li{margin-bottom:12px;max-width:74ch}
+details.selftest .ans{display:block;font-size:14px;color:var(--muted);margin-top:3px}
+details.selftest .ans::before{content:"→ ";color:var(--flink)}
 
-/* footer */
 .finish{margin-top:8px;padding:36px 0 0;border-top:1px solid var(--line);text-align:center}
 .finish h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28px}
-.finish p{color:var(--muted);max-width:56ch;margin:10px auto 0}
+.finish p{color:var(--muted);max-width:58ch;margin:10px auto 0}
 
 @media (max-width:640px){
   .topbar .brand{display:none}
   .page{padding:0 16px 90px}
-  .module{padding-left:48px}
+  .module{padding-left:44px}
   .modules::before{left:13px}
   .module .node{width:28px;height:28px;font-size:11px;top:6px}
   .block{padding:18px 16px}
+  .step{padding-left:14px}
 }
 </style>
 </head>
@@ -223,24 +251,24 @@ details.selftest li{margin-bottom:6px}
 <div class="page">
 
 <header class="hero">
-  <div class="eyebrow">an eight-module, laptop-only curriculum &middot; flink 2.3.x</div>
+  <div class="eyebrow">an eight-module, laptop-only course &middot; flink 2.3.x</div>
   <h1>Learn Flink like a stream: <span class="accent">in order, stateful,</span> exactly once.</h1>
   <p class="standfirst">
-    Built for a senior data engineer coming from Snowflake, Kimball, Kafka theory and dbt. Everything below runs on your
-    laptop with Docker Compose: no cloud accounts, no clusters, no billing surprises. Each module ends with hands-on
-    exercises and a short self-test. Tick items off as you go; progress is saved in your browser's localStorage.
-    The triangle riding the progress bar up top is your watermark.
+    This is a course, not a checklist. Every module teaches the ideas first, then walks you through a lab where each
+    command is written out in full, explained, and followed by what you should expect to see. It assumes a senior data
+    engineer coming from Snowflake, Kimball, dbt and Kafka theory, so it skips SQL basics and instead translates your
+    existing instincts into streaming ones. Everything runs on your laptop with Docker Compose. Tick items off as you
+    go; progress lives in your browser's localStorage. The triangle riding the progress bar is your watermark.
   </p>
   <div class="meta">
     <span>~6&ndash;8 hrs / module</span>
     <span>Docker Compose + SQL Client + PyFlink</span>
-    <span>Kafka, CDC, state &amp; savepoints included</span>
-    <span>progress saved locally</span>
+    <span>every command explained</span>
+    <span>answers included in self-tests</span>
   </div>
 </header>
 
 <main class="modules">
-
 <!-- ============ MODULE 0 ============ -->
 <section class="module" data-module="m0">
   <div class="node">00</div>
@@ -248,30 +276,40 @@ details.selftest li{margin-bottom:6px}
     <div class="kicker">Module 0 &middot; week 1</div>
     <h2>Orientation &amp; the local lab</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Get the mental model right, then get a real Flink cluster running on your laptop. By the end you'll have a JobManager, a TaskManager, the Web UI, and your first running job, and you'll have killed a TaskManager on purpose to see what happens.</p>
+    <p class="intro">Two goals this week: install the right mental model, and get a real Flink cluster running on your laptop. By the end you'll have submitted a job, read its execution graph in the Web UI, and killed a TaskManager on purpose to watch what happens.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>Streaming is the general case.</strong> Your batch career has trained you to think of data as a finite table that exists, gets scanned, and produces a result. Flink inverts this: data is an unbounded stream of events, and a "table" is just what you get if you stop the stream and look at it. A batch job is simply a streaming job over a stream that happens to end. This is why one engine handles both in Flink, and why the streaming concepts you learn here (time, state, windows) are the primitives and batch is the special case.</p>
+    <p><strong>The runtime has exactly three moving parts.</strong> A <em>JobManager</em> is the coordinator: it accepts jobs, schedules work, and orchestrates recovery. <em>TaskManagers</em> are the workers: JVM processes that execute your operators and hold your state in memory or on local disk. Each TaskManager offers a fixed number of <em>task slots</em>, which are the unit of scheduling: a job with parallelism 4 needs 4 slots to run. Slots partition a TaskManager's memory but not its CPU; think of them as reserved seats, not reserved cores.</p>
+    <p><strong>Your code becomes a graph.</strong> When you submit a job, Flink turns your SQL or program into a <em>job graph</em> of operators (source &rarr; filter &rarr; aggregate &rarr; sink), then expands it into an <em>execution graph</em> where each operator is replicated across parallel subtasks. The Web UI shows you this graph live, with throughput and backpressure per operator. Learning to read it is a core skill and we start immediately.</p>
+    <p><strong>There are three API layers, and you'll use two.</strong> Flink SQL and the Table API are declarative and optimised for you, and cover most real pipelines. The DataStream API gives you per-event control. Beneath that, ProcessFunction exposes the raw primitives: events, state, timers. The professional pattern is: SQL by default, drop down only when you must. Flink 2.x cleaned house here: the old DataSet batch API and the Scala API are gone, so everything you learn in this course is the current, long-term surface.</p>
+    <div class="anchor-note"><strong>For the Snowflake brain:</strong> in Snowflake, compute wakes up, scans micro-partitions, produces a result, and goes back to sleep. A Flink job is the opposite: a long-lived program that holds state and reacts to every event as it arrives. Think "a query that never finishes", not "a query that runs fast". There is no equivalent of a warehouse auto-suspending; if the job stops, that is an incident.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m0c1" data-track><label for="m0c1">Bounded vs unbounded data; why "streaming" is the general case and batch is the special case in Flink's model</label></li>
-      <li><input type="checkbox" id="m0c2" data-track><label for="m0c2">Flink runtime anatomy: JobManager, TaskManagers, task slots, and how a job graph becomes an execution graph</label></li>
-      <li><input type="checkbox" id="m0c3" data-track><label for="m0c3">The three API layers: Flink SQL / Table API &rarr; DataStream API &rarr; ProcessFunction, and when you'd drop down a layer</label></li>
-      <li><input type="checkbox" id="m0c4" data-track><label for="m0c4">What changed in Flink 2.x: legacy APIs removed (DataSet, Scala API), disaggregated state, materialized tables</label></li>
+      <li><input type="checkbox" class="box" id="m0c1" data-track><label for="m0c1">I can explain bounded vs unbounded data and why batch is the special case in Flink's model</label></li>
+      <li><input type="checkbox" class="box" id="m0c2" data-track><label for="m0c2">I can name what a JobManager, TaskManager, and task slot each do</label></li>
+      <li><input type="checkbox" class="box" id="m0c3" data-track><label for="m0c3">I can describe how code becomes a job graph and then an execution graph</label></li>
+      <li><input type="checkbox" class="box" id="m0c4" data-track><label for="m0c4">I know the three API layers and Flink's "SQL by default" idiom</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the Snowflake brain:</strong> in Snowflake, compute wakes up, scans micro-partitions, produces a result, and goes to sleep. A Flink job is the opposite: a long-lived program that holds state in memory and reacts to every event as it arrives. Think "a query that never finishes" rather than "a query that runs fast".</div>
   </div>
 
   <div class="block">
-    <h3>Set up the lab</h3>
-    <p>Create a project directory (this plan assumes <code class="inline">~/flink-lab</code>) with this <code class="inline">docker-compose.yml</code>. It gives you a session cluster you'll reuse for most modules:</p>
-<pre><span class="c"># ~/flink-lab/docker-compose.yml</span>
-services:
+    <h3>Lab 0.1 &middot; stand up the cluster</h3>
+
+    <div class="step">
+      <h4><span class="n">STEP 1</span>Create the project and the compose file</h4>
+      <p>Everything in this course lives in one directory. The compose file below defines a <em>session cluster</em>: a long-running JobManager and TaskManager that sit idle waiting for you to submit jobs, which is exactly what you want for a learning lab because you submit many small jobs to the same cluster.</p>
+<pre>mkdir -p ~/flink-lab/{flink-data,jobs,lib,scripts}
+cd ~/flink-lab</pre>
+      <p>The subdirectories: <code class="inline">flink-data</code> will hold checkpoints, savepoints and file sinks (shared with the containers so you can inspect them from your host), <code class="inline">jobs</code> holds code you submit, <code class="inline">lib</code> holds connector jars you download later, <code class="inline">scripts</code> holds Python data generators.</p>
+      <span class="file-label">~/flink-lab/docker-compose.yml</span>
+<pre>services:
   jobmanager:
     image: flink:2.3.0-java17
     ports:
-      - "8081:8081"
-    command: jobmanager
+      - "8081:8081"                <span class="c"># the Web UI, exposed to your laptop</span>
+    command: jobmanager            <span class="c"># same image, role chosen by command</span>
     environment:
       - |
         FLINK_PROPERTIES=
@@ -281,12 +319,12 @@ services:
     volumes:
       - ./flink-data:/flink-data
       - ./jobs:/opt/flink/usrlib
+      - ./lib:/opt/flink/extra-lib
 
   taskmanager:
     image: flink:2.3.0-java17
     depends_on: [jobmanager]
     command: taskmanager
-    scale: 1
     environment:
       - |
         FLINK_PROPERTIES=
@@ -294,33 +332,95 @@ services:
         taskmanager.numberOfTaskSlots: 4
     volumes:
       - ./flink-data:/flink-data
-      - ./jobs:/opt/flink/usrlib</pre>
-    <p>Also install PyFlink on the host for later modules (needs Java 11 or 17 locally): <code class="inline">pip install "apache-flink==2.3.0"</code>. If the exact image tag has moved on, check the tags on Docker Hub for <code class="inline">flink</code> and pick the current 2.x tag.</p>
-    <ul class="chk">
-      <li><input type="checkbox" id="m0e1" data-track><label for="m0e1">Bring the cluster up with <code class="inline">docker compose up -d</code> and open the Web UI at <code class="inline">localhost:8081</code><span class="hint">Find your TaskManager, its 4 slots, and the config tab.</span></label></li>
-      <li><input type="checkbox" id="m0e2" data-track><label for="m0e2">Submit the bundled example: <code class="inline">docker compose exec jobmanager ./bin/flink run examples/streaming/WordCount.jar</code><span class="hint">Watch it appear in the UI, inspect the job graph, then find its stdout in the TaskManager logs.</span></label></li>
-      <li><input type="checkbox" id="m0e3" data-track><label for="m0e3">Scale to two TaskManagers (<code class="inline">docker compose up -d --scale taskmanager=2</code>) and confirm 8 available slots in the UI</label></li>
-      <li><input type="checkbox" id="m0e4" data-track><label for="m0e4">Chaos drill: while a streaming example runs, <code class="inline">docker kill</code> one TaskManager and watch the job fail and restart<span class="hint">Note what the restart strategy did. You'll make recovery actually work in Module 4.</span></label></li>
-    </ul>
-  </div>
+      - ./jobs:/opt/flink/usrlib
+      - ./lib:/opt/flink/extra-lib</pre>
+      <p>What each piece does: <code class="inline">FLINK_PROPERTIES</code> is the official image's way of injecting lines into Flink's config file at startup. <code class="inline">jobmanager.rpc.address</code> tells every process where the coordinator lives (Docker's DNS resolves the service name <code class="inline">jobmanager</code>). The two <code class="inline">state.*.dir</code> settings point durability at the shared volume, so recovery data survives container restarts and is visible on your host. <code class="inline">taskmanager.numberOfTaskSlots: 4</code> means this one worker can run jobs up to parallelism 4. If the image tag has rolled forward by the time you read this, check Docker Hub for the current <code class="inline">flink:2.x</code> tag; nothing else changes.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e1" data-track><label for="m0e1">Project directory and compose file created</label></div>
+    </div>
 
-  <div class="block">
-    <h3>Reading</h3>
-    <ul class="chk">
-      <li><input type="checkbox" id="m0r1" data-track><label for="m0r1">Official docs: "Learn Flink &rarr; Overview" and "Flink Architecture" (nightly docs at nightlies.apache.org/flink)</label></li>
-      <li><input type="checkbox" id="m0r2" data-track><label for="m0r2">The Flink 2.0 release announcement, skimmed for what was removed and why</label></li>
-    </ul>
+    <div class="step">
+      <h4><span class="n">STEP 2</span>Start it and verify</h4>
+<pre>docker compose up -d
+docker compose ps</pre>
+      <p><code class="inline">up -d</code> pulls the image on first run and starts both containers detached. <code class="inline">ps</code> should show both services as <code class="inline">running</code>. Now open <a href="http://localhost:8081">http://localhost:8081</a>. You're looking at the JobManager's Web UI. Confirm three things: the overview shows <em>Task Managers: 1</em> and <em>Total Task Slots: 4</em>; the Task Managers tab lists your worker with its memory breakdown; the Job Manager &rarr; Configuration tab shows the properties you injected. If a container is not running, read its logs:</p>
+<pre>docker compose logs jobmanager --tail 50</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e2" data-track><label for="m0e2">UI open at :8081, one TaskManager, four slots visible</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 3</span>Submit your first job</h4>
+      <p>The image ships example jars. Submit the streaming WordCount from inside the JobManager container:</p>
+<pre>docker compose exec jobmanager ./bin/flink run examples/streaming/WordCount.jar</pre>
+      <p>Unpacking that: <code class="inline">docker compose exec jobmanager</code> runs a command inside the JobManager container. <code class="inline">./bin/flink run</code> is the Flink CLI's submit command: it uploads the jar to the cluster, the JobManager turns the program into a job graph, schedules its subtasks into free slots, runs it, and (because this example is bounded) the job finishes.</p>
+      <span class="out-label">expected output (approximately)</span>
+<pre class="out">Job has been submitted with JobID 8f2e1c…
+Program execution finished
+Job with JobID 8f2e1c… has finished.</pre>
+      <p>The job printed its word counts to the <em>TaskManager's</em> stdout, not yours: the CLI submits, the workers execute. This distinction matters forever, so prove it to yourself:</p>
+<pre>docker compose logs taskmanager | grep -m 5 "("</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">(to,1)
+(be,1)
+(or,1)
+(not,1)
+(to,2)</pre>
+      <p>Note <code class="inline">(to,2)</code>: the count for "to" was <em>updated</em> as the second occurrence streamed in. You just watched incremental, stateful computation, which is the whole point of Flink. In the Web UI, open Completed Jobs &rarr; this job, and click through the graph: a source, a tokenizer, a keyed aggregation, a sink. Click an operator and look at records sent/received.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e3" data-track><label for="m0e3">WordCount submitted, output found in TaskManager logs, job graph explored in the UI</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Scale the workers</h4>
+<pre>docker compose up -d --scale taskmanager=2</pre>
+      <p>Compose starts a second identical TaskManager, which registers itself with the JobManager. Refresh the UI: 2 Task Managers, 8 slots. This is horizontal scaling in miniature, and it's exactly what an autoscaler does in production, just with more ceremony. Scale back down afterwards if you like (<code class="inline">--scale taskmanager=1</code>); the course assumes at least one.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e4" data-track><label for="m0e4">Scaled to 2 TaskManagers and saw 8 slots in the UI</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>The first chaos drill</h4>
+      <p>Start a job that never ends so there's something to break. The image ships a long-running example; StateMachineExample generates its own events and runs forever:</p>
+<pre>docker compose exec -d jobmanager ./bin/flink run \
+  examples/streaming/StateMachineExample.jar</pre>
+      <p>(<code class="inline">-d</code> on <code class="inline">docker compose exec</code> detaches so your terminal returns; the job keeps running, verify in the UI that it's RUNNING.) Now find a TaskManager container's name and kill it ungracefully:</p>
+<pre>docker ps --format '{{.Names}}' | grep taskmanager
+docker kill flink-lab-taskmanager-1</pre>
+      <p><code class="inline">docker kill</code> sends SIGKILL: no graceful shutdown, the JVM just vanishes, like a spot instance reclaim. Watch the UI: the job flips to RESTARTING, and its exceptions tab shows a heartbeat timeout. Bring the worker back:</p>
+<pre>docker compose up -d</pre>
+      <p>The job returns to RUNNING. Here's the uncomfortable truth to sit with: it restarted, but with <em>no checkpointing configured, it lost all its state and restarted from scratch</em>. Recovery ran, correctness didn't. Module 4 is where we fix that, and this drill is repeated there so you can see the difference. Cancel the job when done (UI &rarr; job &rarr; Cancel, or <code class="inline">./bin/flink cancel &lt;jobId&gt;</code>).</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e5" data-track><label for="m0e5">Killed a TaskManager mid-job, watched restart, understood that state was lost</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 6</span>Install PyFlink on the host</h4>
+      <p>Later modules run PyFlink scripts directly on your laptop (they spin up an in-process mini-cluster, no Docker needed, great for iteration). PyFlink needs a local Java 11 or 17:</p>
+<pre>java -version                      <span class="c"># need 11 or 17; on macOS: brew install openjdk@17</span>
+python3 -m venv ~/flink-lab/.venv
+source ~/flink-lab/.venv/bin/activate
+pip install "apache-flink==2.3.0"</pre>
+      <p>Smoke test it. This runs a two-element pipeline entirely inside your Python process:</p>
+<pre>python3 -c "
+from pyflink.datastream import StreamExecutionEnvironment
+env = StreamExecutionEnvironment.get_execution_environment()
+env.from_collection(['hello','flink']).print()
+env.execute('smoke')"</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">hello
+flink</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m0e6" data-track><label for="m0e6">PyFlink installed in a venv and smoke-tested</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>A job needs parallelism 6 and you have 4 slots. What happens, and what are your two ways to fix it?</li>
-        <li>What is the difference between the job graph you see in the UI and the code you wrote?</li>
-        <li>Where does a slot live, and what does it actually reserve?</li>
+        <li>A job needs parallelism 6 and you have 4 slots. What happens, and what are your two fixes?
+          <span class="ans">The job can't acquire enough slots and fails to schedule (after a timeout). Fix by adding slots (more TaskManagers or more slots per TaskManager) or lowering the job's parallelism.</span></li>
+        <li>Why did WordCount's output appear in the TaskManager logs rather than in your terminal?
+          <span class="ans">The CLI only submits; execution happens in TaskManager JVMs, so their stdout receives the print sink. The terminal only sees submission-side messages.</span></li>
+        <li>What exactly did the chaos drill lose, and why?
+          <span class="ans">All operator state (the state machine's per-key progress), because no checkpoint existed to restore from. Restart policy controls whether a job resumes; checkpoints control what it resumes with.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 1 ============ -->
 <section class="module" data-module="m1">
   <div class="node">01</div>
@@ -328,42 +428,161 @@ services:
     <div class="kicker">Module 1 &middot; week 2</div>
     <h2>Flink SQL first</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">You already think in SQL, so start where your instincts transfer. The key mental shift is from tables-as-data to tables-as-changelogs: every Flink table is a view over a stream of inserts, updates, and deletes.</p>
+    <p class="intro">You already think in SQL, so we start where your instincts transfer, then carefully break the one instinct that doesn't: that a table is data. In Flink, a table is a view over a changelog, and once you can read changelogs, most of Flink SQL becomes obvious.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>CREATE TABLE stores nothing.</strong> A Flink table definition is a schema plus connection config bound to an external system by the <code class="inline">WITH (...)</code> clause. It's closer to a Snowflake external table plus a Snowpipe than to a real table: the connector named in <code class="inline">WITH</code> decides where rows come from or go to, and the format decides how bytes become rows. Flink itself keeps only metadata (in an in-memory catalog by default, which is why your tables vanish when you close the SQL client, and why persistent catalogs exist).</p>
+    <p><strong>Every table is secretly a changelog.</strong> Flink models all tables as streams of change rows, each tagged with a <em>RowKind</em>:</p>
+    <table class="teach">
+      <tr><th>kind</th><th>meaning</th><th>emitted by, for example</th></tr>
+      <tr><td><code>+I</code></td><td>insert: a new row</td><td>any source; simple SELECT/WHERE results</td></tr>
+      <tr><td><code>-U</code></td><td>update-before: retract the old version of a row</td><td>a GROUP BY whose aggregate just changed</td></tr>
+      <tr><td><code>+U</code></td><td>update-after: here is the new version</td><td>same GROUP BY, immediately after the -U</td></tr>
+      <tr><td><code>-D</code></td><td>delete: the row is gone</td><td>CDC sources, retractions in joins</td></tr>
+    </table>
+    <p>Work one example by hand, because this is the load-bearing idea of the whole module. Query: <code class="inline">SELECT customer, SUM(amount) FROM orders GROUP BY customer</code>. Order (kai, 10) arrives &rarr; the result emits <code class="inline">+I (kai, 10)</code>. Order (kai, 5) arrives &rarr; the old total is now wrong, so the result emits <code class="inline">-U (kai, 10)</code> then <code class="inline">+U (kai, 15)</code>. A "continuous query" is just this: a standing computation that emits corrections forever. Queries that only ever emit <code class="inline">+I</code> produce an <em>append-only</em> stream (filters, projections, window aggregates after the window closes); queries that revise history produce an <em>updating</em> stream (plain GROUP BY, TOP-N, most joins). Which one you have determines which sinks you're allowed to use, and half of all beginner Flink SQL errors are "your sink can't accept updates".</p>
+    <div class="anchor-note"><strong>For the Snowflake brain:</strong> a streaming <code class="inline">GROUP BY</code> behaves like a materialized view that updates on every input row, and its changelog is what a Snowflake stream object would show you: the deltas. When the SQL client later shows you changelog mode, you're looking at the same +I/-U/+U shapes a Snowflake stream calls METADATA$ACTION.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m1c1" data-track><label for="m1c1">Dynamic tables and continuous queries; append-only vs updating results</label></li>
-      <li><input type="checkbox" id="m1c2" data-track><label for="m1c2">Changelog semantics: +I, -U, +U, -D rows and why a streaming <code class="inline">GROUP BY</code> emits retractions</label></li>
-      <li><input type="checkbox" id="m1c3" data-track><label for="m1c3">Connectors and formats: how <code class="inline">CREATE TABLE ... WITH (...)</code> binds SQL to external systems</label></li>
-      <li><input type="checkbox" id="m1c4" data-track><label for="m1c4">The catalog model (in-memory default vs persistent catalogs)</label></li>
+      <li><input type="checkbox" class="box" id="m1c1" data-track><label for="m1c1">I can explain why CREATE TABLE stores nothing and what WITH does</label></li>
+      <li><input type="checkbox" class="box" id="m1c2" data-track><label for="m1c2">I can hand-simulate the +I/-U/+U changelog of a GROUP BY over three input rows</label></li>
+      <li><input type="checkbox" class="box" id="m1c3" data-track><label for="m1c3">I can say which query shapes are append-only and which are updating</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the Snowflake brain:</strong> <code class="inline">CREATE TABLE</code> in Flink stores no data. It's closer to an external table definition plus a Snowpipe: a schema and connection config over something that lives elsewhere. And a streaming <code class="inline">SELECT COUNT(*) ... GROUP BY</code> never returns; it emits a correction every time an input row arrives, like a materialized view that updates continuously.</div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <p>Open the SQL Client inside the running cluster:</p>
-<pre>docker compose exec jobmanager ./bin/sql-client.sh</pre>
-    <ul class="chk">
-      <li><input type="checkbox" id="m1e1" data-track><label for="m1e1">Create a <code class="inline">datagen</code> source table of fake orders (order_id, customer_id, amount, order_time) and <code class="inline">SELECT</code> from it<span class="hint">Set rows-per-second to something calm, like 5.</span></label></li>
-      <li><input type="checkbox" id="m1e2" data-track><label for="m1e2">Run a continuous aggregation: revenue per customer with <code class="inline">GROUP BY</code>, and watch rows update in place in the client<span class="hint">Switch SET 'sql-client.execution.result-mode' between 'table' and 'changelog' to see the retract stream.</span></label></li>
-      <li><input type="checkbox" id="m1e3" data-track><label for="m1e3">Sink results to the <code class="inline">filesystem</code> connector as JSON under <code class="inline">/flink-data/out</code>, then inspect the files on your host</label></li>
-      <li><input type="checkbox" id="m1e4" data-track><label for="m1e4">Write a query the changelog can't ignore: top-3 customers by revenue using a windowed <code class="inline">ROW_NUMBER()</code>, and explain to yourself why the output churns</label></li>
-      <li><input type="checkbox" id="m1e5" data-track><label for="m1e5">Run <code class="inline">EXPLAIN</code> on your aggregation and map each operator to what you saw in the Web UI job graph</label></li>
-    </ul>
+    <h3>Lab 1.1 &middot; the SQL client and your first continuous query</h3>
+
+    <div class="step">
+      <h4><span class="n">STEP 1</span>Open the SQL client</h4>
+<pre>docker compose exec -it jobmanager ./bin/sql-client.sh</pre>
+      <p>This starts an interactive shell (you'll see a squirrel) that plans your SQL and submits each query as a job to the session cluster; the client itself does no processing. First, make results render inline in a readable grid:</p>
+<pre>SET 'sql-client.execution.result-mode' = 'tableau';</pre>
+      <p>Three modes exist: <code class="inline">table</code> (a live-updating materialized grid), <code class="inline">changelog</code> (the raw +I/-U/+U rows scrolling past), and <code class="inline">tableau</code> (batch-style printing). You'll deliberately switch between them in step 3 because each reveals a different truth about the same query.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m1e1" data-track><label for="m1e1">SQL client open, result mode set</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 2</span>Create a fake-data source</h4>
+      <p>The <code class="inline">datagen</code> connector manufactures rows at a rate you choose, which makes it the perfect zero-dependency teaching source. Paste this whole statement:</p>
+<pre>CREATE TABLE orders (
+  order_id    STRING,
+  customer_id INT,
+  amount      DECIMAL(10,2),
+  order_time  AS localtimestamp,
+  WATERMARK FOR order_time AS order_time - INTERVAL '5' SECOND
+) WITH (
+  'connector' = 'datagen',
+  'rows-per-second' = '5',
+  'fields.order_id.kind' = 'random',
+  'fields.order_id.length' = '8',
+  'fields.customer_id.min' = '1',
+  'fields.customer_id.max' = '5',
+  'fields.amount.min' = '1.00',
+  'fields.amount.max' = '500.00'
+);</pre>
+      <p>Line by line: <code class="inline">order_time AS localtimestamp</code> is a <em>computed column</em>: not generated data but an expression evaluated per row, here stamping arrival time. The <code class="inline">WATERMARK</code> line declares event time for this table (Module 2 is entirely about what this means; for now it's future-proofing). In <code class="inline">WITH</code>: 5 rows/second keeps output humanly readable; the <code class="inline">fields.*</code> options control generation per column, and pinning <code class="inline">customer_id</code> to 1&ndash;5 guarantees repeated keys so aggregations visibly update. Now watch raw rows flow:</p>
+<pre>SELECT * FROM orders;</pre>
+      <p>Rows scroll forever: your first unbounded query. Press <code class="inline">Q</code> to stop it. Stopping the display also cancels the underlying job; check Completed Jobs in the Web UI and you'll find it listed as CANCELED.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m1e2" data-track><label for="m1e2">datagen table created, raw stream observed and cancelled</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 3</span>Watch a continuous aggregation correct itself</h4>
+<pre>SET 'sql-client.execution.result-mode' = 'changelog';
+
+SELECT customer_id, COUNT(*) AS orders, SUM(amount) AS revenue
+FROM orders
+GROUP BY customer_id;</pre>
+      <span class="out-label">expected output (shape, not exact values)</span>
+<pre class="out"> op | customer_id | orders | revenue
+ +I |           3 |      1 |   87.20
+ +I |           1 |      1 |  240.10
+ -U |           3 |      1 |   87.20
+ +U |           3 |      2 |  301.75
+ -U |           1 |      1 |  240.10
+ +U |           1 |      2 |  350.60 …</pre>
+      <p>Read the <code class="inline">op</code> column against the table in "The ideas": every new order for a customer retracts the old total and asserts the new one. This -U/+U pair is what any downstream consumer of this query must be able to absorb. Now see the friendly view of the same thing:</p>
+<pre>SET 'sql-client.execution.result-mode' = 'table';
+
+SELECT customer_id, COUNT(*) AS orders, SUM(amount) AS revenue
+FROM orders
+GROUP BY customer_id;</pre>
+      <p>Five rows, updating in place. Same query, same changelog underneath; the client is just applying the changelog for you, which is exactly what an upsert sink will do in Module 5. Quit with <code class="inline">Q</code>.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m1e3" data-track><label for="m1e3">Saw the same GROUP BY in changelog mode and table mode, and can narrate the -U/+U pairs</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Sink to files, and meet your first "sink can't accept updates" error</h4>
+      <p>Try to write the updating aggregate to the filesystem connector:</p>
+<pre>CREATE TABLE revenue_files (
+  customer_id INT, revenue DECIMAL(10,2)
+) WITH (
+  'connector' = 'filesystem',
+  'path' = 'file:///flink-data/out/revenue',
+  'format' = 'json'
+);
+
+INSERT INTO revenue_files
+SELECT customer_id, SUM(amount) FROM orders GROUP BY customer_id;</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">[ERROR] … Table sink 'revenue_files' doesn't support consuming update changes
+which is produced by node GroupAggregate…</pre>
+      <p>Perfect: this error is the changelog theory becoming real. Files are append-only media; a -U row has nowhere to go. Two standard escapes exist: use an upsert-capable sink (Module 5), or reshape the query so it's append-only. Do the second now by wrapping amounts in a window later (Module 2) or, simplest today, sinking the raw append-only stream instead:</p>
+<pre>SET 'execution.checkpointing.interval' = '10s';
+
+CREATE TABLE orders_files (
+  order_id STRING, customer_id INT, amount DECIMAL(10,2)
+) WITH (
+  'connector' = 'filesystem',
+  'path' = 'file:///flink-data/out/orders',
+  'format' = 'json'
+);
+
+INSERT INTO orders_files SELECT order_id, customer_id, amount FROM orders;</pre>
+      <p>The checkpoint SET line matters and is a classic gotcha: the filesystem sink writes to hidden in-progress part files and only <em>finalises</em> them when a checkpoint completes, because checkpoints are Flink's unit of "this output is now committed". No checkpointing, no visible files, forever. Let it run ~30 seconds, then on your host:</p>
+<pre>ls ~/flink-lab/flink-data/out/orders/
+head -3 ~/flink-lab/flink-data/out/orders/part-*</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">part-6f0a…-0-0
+{"order_id":"a81xk2mQ","customer_id":4,"amount":331.42}
+{"order_id":"Zz09qLpR","customer_id":1,"amount":12.05} …</pre>
+      <p>Cancel the INSERT job in the Web UI when you're satisfied (INSERT statements run as detached jobs; the client prompt returned immediately after submitting it).</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m1e4" data-track><label for="m1e4">Hit the updating-sink error on purpose, then landed JSON files with checkpointing enabled</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>TOP-N and EXPLAIN</h4>
+      <p>A ranking query shows how violently an updating result can churn. This is Flink's canonical TOP-N pattern: rank in a subquery, filter on the rank outside:</p>
+<pre>SET 'sql-client.execution.result-mode' = 'changelog';
+
+SELECT * FROM (
+  SELECT customer_id, revenue,
+         ROW_NUMBER() OVER (ORDER BY revenue DESC) AS rn
+  FROM (SELECT customer_id, SUM(amount) AS revenue
+        FROM orders GROUP BY customer_id)
+) WHERE rn &lt;= 3;</pre>
+      <p>Watch the churn: every time totals reorder, rows are deleted and re-inserted with new ranks. Every one of those changes costs state and downstream work; when a TOP-N feels expensive in production, this is why. Finally, ask the planner what it actually built:</p>
+<pre>EXPLAIN
+SELECT customer_id, SUM(amount) FROM orders GROUP BY customer_id;</pre>
+      <p>You'll get three sections: the logical plan (your SQL, algebra-fied), the optimized physical plan, and notes on changelog modes per operator. Find <code class="inline">GroupAggregate</code> in the physical plan, then run the query and match the operator names against the boxes in the Web UI job graph. SQL &rarr; plan &rarr; running graph is one unbroken chain, and being able to walk it is the debugging skill.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m1e5" data-track><label for="m1e5">Ran TOP-N in changelog mode, then matched an EXPLAIN plan to the live job graph</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>Which query shapes produce an append-only stream, and which force an updating stream?</li>
-        <li>Why can't you write an updating result to a plain filesystem sink without windows or upsert support?</li>
-        <li>What does the datagen connector's checkpoint behaviour imply about replayability?</li>
+        <li>Which of these produce an append-only stream: (a) WHERE filter, (b) GROUP BY, (c) window aggregate emitting once per closed window, (d) TOP-N?
+          <span class="ans">(a) and (c). Filters never revise emitted rows; closed windows emit final results once. GROUP BY and TOP-N continuously revise, so they're updating.</span></li>
+        <li>Why did the filesystem sink produce no files until checkpointing was on?
+          <span class="ans">The sink stages writes in in-progress files and commits (renames) them only on checkpoint completion, so results are atomic with Flink's recovery point. No checkpoints means nothing is ever committed.</span></li>
+        <li>Where did your <code class="inline">orders</code> table definition go when you closed the SQL client?
+          <span class="ans">Gone. The default catalog is in-memory and per-session. Persistent catalogs (or re-running DDL scripts via -i init files) fix this; the course keeps a growing init.sql from Module 5 onward.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 2 ============ -->
 <section class="module" data-module="m2">
   <div class="node">02</div>
@@ -371,52 +590,148 @@ services:
     <div class="kicker">Module 2 &middot; week 3</div>
     <h2>Time, watermarks &amp; windows</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">This is the module that separates people who use Flink from people who understand it. Event time, watermarks, and lateness are the ideas your batch background gives you no intuition for, so this week is deliberately experimental: you'll break windows on purpose.</p>
+    <p class="intro">This is the module that separates people who use Flink from people who understand it. Your batch background gives you no intuition for watermarks, so this week is deliberately experimental: you'll control every event's timestamp by hand and break windows on purpose.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>Two clocks.</strong> <em>Processing time</em> is the wall clock of the machine handling the event. <em>Event time</em> is the timestamp inside the event, when the thing actually happened. They diverge because networks are slow, producers buffer, devices go offline, backfills happen. The business almost always means event time ("revenue between 12:00 and 12:01" means when orders were placed, not when your pipeline got around to them), so event time is the default professional choice, and it creates the problem this module exists to solve: events arrive out of order, so how do you ever know an event-time window is complete?</p>
+    <p><strong>Watermarks are the answer, and they're just a claim.</strong> A watermark with value T is a statement flowing through the stream: "I believe no event with timestamp &le; T is still coming." With the standard bounded-out-of-orderness strategy, the source continuously emits watermark = (max event timestamp seen so far) &minus; (a bound you choose). Declare a 10-second bound and after seeing an event at 12:00:30, the watermark stands at 12:00:20, meaning anything claiming to have happened before 12:00:20 is now considered too late.</p>
+    <p><strong>Windows fire when the watermark passes their end.</strong> A tumbling window [12:00:00, 12:01:00) does not fire at 12:01 on anyone's wall clock. It fires when the <em>watermark</em> reaches 12:01:00, i.e. when the stream itself has declared that minute complete. Until then the window sits in state, absorbing out-of-order events into their correct minute. This is the mechanism that buys correctness under disorder, and its price is latency: a 10-second bound means every window fires at least 10 seconds "late" relative to the data.</p>
+    <p><strong>Two consequences you must feel in your hands.</strong> First, <em>late data</em>: an event whose timestamp is behind the watermark belongs to a window that already fired; in SQL it is silently dropped (count it with metrics in production). Second, <em>watermarks merge on the minimum</em>: an operator reading several parallel inputs takes the slowest input's watermark, so one stalled partition freezes every window downstream. That's the idle-source problem, and you'll cause it deliberately in the lab.</p>
+    <div class="anchor-note"><strong>For the Kimball brain:</strong> a watermark answers the question your nightly batch never had to ask explicitly: "when is the data complete enough to publish?" Batch answers with the clock ("run at 2am, assume yesterday has landed"). Flink answers per-event and continuously, and makes you choose the completeness-vs-latency trade-off as a number.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m2c1" data-track><label for="m2c1">Event time vs processing time vs ingestion time, and why event time is usually what the business means</label></li>
-      <li><input type="checkbox" id="m2c2" data-track><label for="m2c2">Watermarks as a claim: "I believe no event older than T is still coming", and bounded out-of-orderness strategies</label></li>
-      <li><input type="checkbox" id="m2c3" data-track><label for="m2c3">Window types: tumbling, sliding (hopping), session, cumulate, and windowing TVFs in SQL</label></li>
-      <li><input type="checkbox" id="m2c4" data-track><label for="m2c4">Late data: what triggers a drop, allowed lateness, and idle sources stalling watermarks</label></li>
+      <li><input type="checkbox" class="box" id="m2c1" data-track><label for="m2c1">I can define event vs processing time and say which the business usually means</label></li>
+      <li><input type="checkbox" class="box" id="m2c2" data-track><label for="m2c2">I can state the watermark formula for bounded out-of-orderness and what the claim means</label></li>
+      <li><input type="checkbox" class="box" id="m2c3" data-track><label for="m2c3">I can state the exact condition that makes an event-time window fire</label></li>
+      <li><input type="checkbox" class="box" id="m2c4" data-track><label for="m2c4">I know what happens to late rows in SQL and why watermarks merge on the minimum</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the Kimball brain:</strong> a watermark is the streaming answer to the question your nightly batch never had to ask: "when is the day's data complete enough to publish?" Batch answers it with the clock ("run at 2am"). Flink answers it per-event and continuously, and lets you choose the trade-off between latency and completeness explicitly.</div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <p>Do these in the SQL Client. The trick to seeing watermarks clearly is a source you control, so first write a tiny Python generator that appends JSON lines with deliberately shuffled timestamps to a file under <code class="inline">./flink-data/events/</code>, then define a filesystem source over it with a watermark:</p>
+    <h3>Lab 2.1 &middot; a source you fully control</h3>
+    <div class="step">
+      <h4><span class="n">STEP 1</span>Write the event generator</h4>
+      <p>The trick to actually seeing watermarks is a source where <em>you</em> decide every timestamp. This script appends JSON lines to a directory Flink will monitor; it emits clicks whose timestamps are mostly current, sometimes a bit old (out of order), and occasionally very old (properly late):</p>
+      <span class="file-label">~/flink-lab/scripts/clickgen.py</span>
+<pre>import json, random, time, os
+from datetime import datetime, timedelta, timezone
+
+OUT = os.path.expanduser("~/flink-lab/flink-data/events")
+os.makedirs(OUT, exist_ok=True)
+users = ["ana", "bo", "cai", "dee"]
+
+def emit(f, ts, user):
+    f.write(json.dumps({
+        "user_id": user,
+        "url": "/page/" + str(random.randint(1, 9)),
+        "ts": ts.strftime("%Y-%m-%d %H:%M:%S.000")
+    }) + "\n")
+    f.flush()
+
+with open(f"{OUT}/clicks.jsonl", "a") as f:
+    while True:
+        now = datetime.now(timezone.utc)
+        r = random.random()
+        if r &lt; 0.80:   ts = now                                  # on time
+        elif r &lt; 0.97: ts = now - timedelta(seconds=random.randint(1, 8))   # out of order, inside bound
+        else:          ts = now - timedelta(minutes=5)           # properly late
+        emit(f, ts, random.choice(users))
+        time.sleep(0.5)</pre>
+      <p>Why these numbers: the watermark bound you'll declare is 10 seconds, so the 1&ndash;8 second stragglers land <em>inside</em> the bound (they'll be placed correctly) while the 5-minute stragglers land far <em>behind</em> the watermark (they'll be dropped). You've built a controlled experiment. Run it in its own terminal and leave it running:</p>
+<pre>source ~/flink-lab/.venv/bin/activate && python3 ~/flink-lab/scripts/clickgen.py</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e1" data-track><label for="m2e1">Generator running, clicks.jsonl growing (check with tail -f)</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 2</span>Define the source with a watermark</h4>
+      <p>In the SQL client:</p>
 <pre>CREATE TABLE clicks (
   user_id STRING,
-  url STRING,
-  ts TIMESTAMP(3),
+  url     STRING,
+  ts      TIMESTAMP(3),
   WATERMARK FOR ts AS ts - INTERVAL '10' SECOND
 ) WITH (
   'connector' = 'filesystem',
   'path' = 'file:///flink-data/events',
   'format' = 'json',
-  'source.monitor-interval' = '5s'
+  'source.monitor-interval' = '2s'
 );</pre>
-    <ul class="chk">
-      <li><input type="checkbox" id="m2e1" data-track><label for="m2e1">Tumbling window counts per minute with the <code class="inline">TUMBLE</code> TVF; verify results against a manual count</label></li>
-      <li><input type="checkbox" id="m2e2" data-track><label for="m2e2">Feed an event 30 seconds out of order and confirm it lands in the right window (inside the watermark bound)</label></li>
-      <li><input type="checkbox" id="m2e3" data-track><label for="m2e3">Feed an event 5 minutes late and watch it get dropped; then reason about what allowed lateness would have done<span class="hint">In SQL, late rows to a closed window are silently dropped. Sit with that for a moment.</span></label></li>
-      <li><input type="checkbox" id="m2e4" data-track><label for="m2e4">Build a session-window query (<code class="inline">SESSION</code>, 30s gap) over the same clicks and check the session boundaries by hand</label></li>
-      <li><input type="checkbox" id="m2e5" data-track><label for="m2e5">Stop the generator mid-run and observe windows not closing; explain why using watermark propagation<span class="hint">This is the idle-source problem. Find the table.exec.source.idle-timeout option.</span></label></li>
-    </ul>
+      <p>The two lines that matter: the <code class="inline">WATERMARK</code> clause implements exactly the formula from the ideas section (max ts seen, minus 10 seconds) and simultaneously marks <code class="inline">ts</code> as this table's event-time attribute, which is what permits event-time windows over it. <code class="inline">source.monitor-interval</code> turns the filesystem connector into a streaming source that re-scans the directory every 2 seconds for appended data instead of reading once and finishing. Sanity-check with <code class="inline">SELECT * FROM clicks;</code> (tableau mode), then Q.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e2" data-track><label for="m2e2">clicks table created, rows flowing through SELECT *</label></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Lab 2.2 &middot; windows, disorder, and loss</h3>
+    <div class="step">
+      <h4><span class="n">STEP 3</span>Tumbling windows with the TUMBLE table function</h4>
+      <p>Modern Flink SQL expresses windows as table-valued functions: <code class="inline">TUMBLE(...)</code> takes your table and logically adds <code class="inline">window_start</code>/<code class="inline">window_end</code> columns; grouping by them gives per-window aggregates.</p>
+<pre>SET 'sql-client.execution.result-mode' = 'changelog';
+
+SELECT window_start, window_end, COUNT(*) AS clicks
+FROM TABLE(
+  TUMBLE(TABLE clicks, DESCRIPTOR(ts), INTERVAL '1' MINUTE))
+GROUP BY window_start, window_end;</pre>
+      <span class="out-label">expected output (one row per minute, arriving ~70s after the minute starts)</span>
+<pre class="out"> op | window_start        | window_end          | clicks
+ +I | 2026-08-29 03:14:00 | 2026-08-29 03:15:00 |    118
+ +I | 2026-08-29 03:15:00 | 2026-08-29 03:16:00 |    121</pre>
+      <p>Two observations to make deliberately. First, the <code class="inline">op</code> column shows only <code class="inline">+I</code>: a closed window emits once and never revises, so this is an append-only stream and <em>could</em> go straight to the filesystem sink that rejected you in Module 1. Second, time the arrival of each row: the 03:14 window appears roughly 10 seconds after 03:15:00 in the data, because it fires only when the watermark (max ts &minus; 10s) crosses 03:15:00. You are watching the latency you purchased with your out-of-orderness bound.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e3" data-track><label for="m2e3">Windows firing on watermark, append-only nature and ~10s firing delay both observed</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Prove correct placement, then prove loss</h4>
+      <p>While the window query runs, add a hand-crafted event that's 30 seconds old but for a <em>current, still-open</em> minute? No: better, make the two cases crisp. In a third terminal, append one event 8 seconds old (inside the bound) and one 5 minutes old (way behind the watermark):</p>
+<pre>python3 - << 'PY'
+import json, os
+from datetime import datetime, timedelta, timezone
+p = os.path.expanduser("~/flink-lab/flink-data/events/manual.jsonl")
+now = datetime.now(timezone.utc)
+rows = [("inbound", now - timedelta(seconds=8)),
+        ("ghost",   now - timedelta(minutes=5))]
+with open(p, "a") as f:
+    for user, ts in rows:
+        f.write(json.dumps({"user_id": user, "url": "/x",
+          "ts": ts.strftime("%Y-%m-%d %H:%M:%S.000")}) + "\n")
+PY</pre>
+      <p>Now watch: user <code class="inline">inbound</code>'s click is counted in the correct (still-open) minute even though it arrived out of order; that's the watermark bound doing its job, holding windows open just long enough. User <code class="inline">ghost</code> never appears anywhere: its window fired minutes ago, and Flink SQL silently drops rows behind the watermark. Silently is the operative word; in production you watch the source operator's <code class="inline">numLateRecordsDropped</code> metric, or widen the bound, or route lates separately in the DataStream API. Nothing tells you here. Sit with that.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e4" data-track><label for="m2e4">Confirmed: 8s-old event counted correctly, 5-minute-old event silently dropped</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>Session windows</h4>
+      <p>Sessions are windows whose boundaries come from the data: a session closes after a gap of inactivity per key. This is the shape behind "user sessions" in every analytics stack, and it's a one-liner here:</p>
+<pre>SELECT user_id, window_start, window_end, COUNT(*) AS clicks
+FROM TABLE(
+  SESSION(TABLE clicks PARTITION BY user_id, DESCRIPTOR(ts), INTERVAL '30' SECOND))
+GROUP BY user_id, window_start, window_end;</pre>
+      <p><code class="inline">PARTITION BY user_id</code> makes gaps per-user. With four users clicking every ~2 seconds, gaps over 30s are rare, so to see sessions close, stop the generator (Ctrl-C) for 45 seconds and restart it: every user's session closes (once the watermark advances past gap-end), and new sessions begin. Which leads directly into the trap in step 6.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e5" data-track><label for="m2e5">Session windows observed closing after a forced 45s gap</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 6</span>The idle-source stall</h4>
+      <p>Stop the generator and leave it stopped, with the tumbling-window query from step 3 running. Wait two minutes. Notice what does <em>not</em> happen: the last partial window never fires, even though the wall clock has long passed its end. Why: watermarks only advance when events arrive (max ts seen never grows), so a quiet source freezes event time itself. In multi-partition sources this is worse: one idle Kafka partition holds back the merged (minimum) watermark for everyone. The standard mitigation is an idleness timeout, after which a quiet source stops being counted in the minimum:</p>
+<pre>SET 'table.exec.source.idle-timeout' = '15s';</pre>
+      <p>Re-run the window query with the generator on, then stop the generator again: this time, after 15 seconds of silence the source is marked idle... but with a single source and no events at all, there's still no max-timestamp to advance, so the final window still waits. The lesson lands anyway: idleness handling unblocks <em>other</em> inputs; it can't invent time. Restart the generator and watch everything catch up at once, which is also worth seeing: a burst of windows firing as the watermark leaps forward.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m2e6" data-track><label for="m2e6">Caused and explained a watermark stall, then watched the catch-up burst</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>A window [12:00, 12:01) fires. Exactly what watermark condition made it fire?</li>
-        <li>Two Kafka partitions, one fast and one slow: whose watermark wins downstream, and why?</li>
-        <li>When would you pick a larger out-of-orderness bound, and what do you pay for it?</li>
+        <li>A window [12:00, 12:01) fires. State the exact condition that made it fire.
+          <span class="ans">The operator's watermark reached/passed 12:01:00.000, i.e. some event with ts &ge; 12:01:10 arrived (given the 10s bound), and that watermark propagated to the window operator.</span></li>
+        <li>Two Kafka partitions, one fast and one slow. Whose watermark governs downstream windows, and why?
+          <span class="ans">The slow one's. Downstream operators take the minimum across inputs, because the claim "nothing older than T is coming" is only safe if it holds for every input.</span></li>
+        <li>You widen the bound from 10s to 5min. Name the two costs.
+          <span class="ans">Latency: every window fires up to 5 minutes later. State: windows (and anything keyed on event time) stay open longer, so more state is held concurrently.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 3 ============ -->
 <section class="module" data-module="m3">
   <div class="node">03</div>
@@ -424,52 +739,191 @@ services:
     <div class="kicker">Module 3 &middot; week 4</div>
     <h2>The DataStream API</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Now drop below SQL. The DataStream API is where you control events one at a time, and ProcessFunction with timers is Flink's most honest primitive: everything else is built on it. You'll use PyFlink so the iteration loop stays fast on a laptop.</p>
+    <p class="intro">Now drop below SQL. The DataStream API is where you handle events one at a time, and KeyedProcessFunction with timers is Flink's most honest primitive: windows, joins, and SQL operators are all built from it. You'll work in PyFlink so the edit-run loop stays fast.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>The programming model is a pipeline of transformations.</strong> You get a <code class="inline">StreamExecutionEnvironment</code>, attach sources, chain transformations (<code class="inline">map</code>, <code class="inline">filter</code>, <code class="inline">flat_map</code>, <code class="inline">key_by</code>, <code class="inline">process</code>), attach sinks, and call <code class="inline">execute()</code>. Nothing runs until <code class="inline">execute()</code>: everything before it only builds the job graph. This is lazy evaluation exactly like a dbt DAG or a Spark plan, and it explains many beginner confusions ("my print before execute showed nothing").</p>
+    <p><strong>key_by is a physical statement, not a GROUP BY.</strong> <code class="inline">key_by(f)</code> hash-partitions the stream: all events with the same key are routed over the network to the same parallel subtask, forever after. That guarantee is what makes <em>keyed state</em> possible: because subtask 2 is the only place events for key "ana" ever go, subtask 2 can keep a little local variable about "ana" and it is guaranteed complete. Keyed state is not a shared cache or an external store; it is state sharded by exactly the same hash as the data.</p>
+    <p><strong>KeyedProcessFunction = event + state + timers.</strong> For each event you get <code class="inline">process_element(value, ctx)</code> with access to (a) the current key's state and (b) a timer service where you can register callbacks for a future time; when a timer fires you get <code class="inline">on_timer(timestamp, ctx)</code> with the same key's state. Event-driven logic plus scheduled logic plus per-key memory: that trio expresses almost anything, including "alert if a user goes quiet for 30 seconds", which is this module's centrepiece and a pattern you will reuse for the rest of your Flink life (timeouts, sessionisation, TTL cleanup, delayed actions).</p>
+    <div class="anchor-note"><strong>For the dbt brain:</strong> SQL/Table API is your dbt layer: declarative, optimisable, right for 80% of jobs. DataStream is writing a custom materialization: you accept responsibility for state, time and correctness in exchange for control. Learn it well precisely so you can recognise when you don't need it.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m3c1" data-track><label for="m3c1">Sources, transformations, sinks; keyBy and what a keyed stream physically means (hash partitioning across subtasks)</label></li>
-      <li><input type="checkbox" id="m3c2" data-track><label for="m3c2">Operator chaining, parallelism per operator, and reading the runtime graph</label></li>
-      <li><input type="checkbox" id="m3c3" data-track><label for="m3c3">ProcessFunction: per-event logic plus keyed state plus timers (event-time and processing-time)</label></li>
-      <li><input type="checkbox" id="m3c4" data-track><label for="m3c4">When to choose SQL vs DataStream, and how the two interop (Table &harr; DataStream conversion)</label></li>
+      <li><input type="checkbox" class="box" id="m3c1" data-track><label for="m3c1">I can explain why nothing runs before execute()</label></li>
+      <li><input type="checkbox" class="box" id="m3c2" data-track><label for="m3c2">I can explain what key_by physically does and why keyed state depends on it</label></li>
+      <li><input type="checkbox" class="box" id="m3c3" data-track><label for="m3c3">I can sketch the process_element / on_timer lifecycle from memory</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the dbt brain:</strong> SQL/Table API is your dbt layer: declarative, optimisable, 80% of jobs. DataStream is the escape hatch, like writing a custom materialization: you take responsibility for state, time, and correctness in exchange for full control. Learn it well precisely so you can recognise when you don't need it.</div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <p>Skeleton for a local PyFlink script (runs in-process, no cluster needed, which makes print-debugging pleasant):</p>
+    <h3>Lab 3.1 &middot; hello, pipeline</h3>
+    <div class="step">
+      <h4><span class="n">STEP 1</span>A minimal in-process job</h4>
+      <p>PyFlink scripts run on your laptop inside a local mini-cluster: same engine, zero Docker. Save and run:</p>
+      <span class="file-label">~/flink-lab/jobs/hello.py</span>
 <pre>from pyflink.datastream import StreamExecutionEnvironment
+
+env = StreamExecutionEnvironment.get_execution_environment()
+env.set_parallelism(1)   <span class="c"># one subtask everywhere: deterministic output while learning</span>
+
+ds = env.from_collection([("ana", 1), ("bo", 2), ("ana", 3)])
+
+(ds
+  .key_by(lambda e: e[0])                 <span class="c"># hash-partition by user</span>
+  .map(lambda e: (e[0], e[1] * 10))       <span class="c"># per-event transform</span>
+  .print())                               <span class="c"># debug sink -> stdout</span>
+
+env.execute("hello_datastream")</pre>
+<pre>cd ~/flink-lab && source .venv/bin/activate && python3 jobs/hello.py</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">(ana,10)
+(bo,20)
+(ana,30)</pre>
+      <p>Try it once with <code class="inline">set_parallelism(2)</code> and note the output lines gain a subtask prefix like <code class="inline">2&gt;</code>, and ana's two events always share the same prefix while bo may differ: key_by's routing guarantee, visible in a print statement.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m3e1" data-track><label for="m3e1">hello.py runs; key routing observed via subtask prefixes at parallelism 2</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 2</span>A real streaming source</h4>
+      <p>Reuse the Module 2 generator as a live source. FileSource in monitoring mode tails a directory, the DataStream twin of the SQL filesystem source you already used:</p>
+      <span class="file-label">~/flink-lab/jobs/tail_clicks.py</span>
+<pre>import json
+from pyflink.common import WatermarkStrategy, Duration
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.datastream.connectors.file_system import FileSource, StreamFormat
 
 env = StreamExecutionEnvironment.get_execution_environment()
 env.set_parallelism(1)
 
-ds = env.from_collection([("lin", 1), ("kai", 2), ("lin", 3)])
-ds.key_by(lambda e: e[0]) \
-  .map(lambda e: (e[0], e[1] * 10)) \
-  .print()
+src = (FileSource
+       .for_record_stream_format(
+           StreamFormat.text_line_format(),
+           "/Users/YOU/flink-lab/flink-data/events")   <span class="c"># absolute path, edit YOU</span>
+       .monitor_continuously(Duration.of_seconds(2))    <span class="c"># streaming, not one-shot</span>
+       .build())
 
-env.execute("hello_datastream")</pre>
-    <ul class="chk">
-      <li><input type="checkbox" id="m3e1" data-track><label for="m3e1">Run the skeleton locally, then rewrite it to read from a socket (<code class="inline">nc -lk 9999</code>) so you can type events live</label></li>
-      <li><input type="checkbox" id="m3e2" data-track><label for="m3e2">Implement a KeyedProcessFunction "inactivity detector": for each user, emit an alert if no event arrives for 30 seconds<span class="hint">ValueState to remember the last timer, delete and re-register on every event. This pattern is half of real-world Flink.</span></label></li>
-      <li><input type="checkbox" id="m3e3" data-track><label for="m3e3">Add a watermark strategy to a stream with timestamps and re-do the inactivity detector with event-time timers</label></li>
-      <li><input type="checkbox" id="m3e4" data-track><label for="m3e4">Convert a DataStream to a Table, run a SQL aggregation on it, convert back, and print the changelog</label></li>
-      <li><input type="checkbox" id="m3e5" data-track><label for="m3e5">Package one PyFlink job and submit it to your Docker cluster with <code class="inline">./bin/flink run -py</code> instead of running in-process</label></li>
-    </ul>
+ds = env.from_source(src, WatermarkStrategy.no_watermarks(), "clicks")
+
+(ds.map(lambda line: json.loads(line)["user_id"])
+   .print())
+
+env.execute("tail_clicks")</pre>
+      <p>Start the Module 2 generator in another terminal, run this, and user ids stream to your console live. <code class="inline">monitor_continuously</code> is the switch that makes the source unbounded; without it the job would read existing files and finish.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m3e2" data-track><label for="m3e2">Live tailing works: generator writes, PyFlink prints</label></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Lab 3.2 &middot; the inactivity detector</h3>
+    <div class="step">
+      <h4><span class="n">STEP 3</span>Build it</h4>
+      <p>The spec: for each user, if no click arrives for 30 seconds, emit an alert. Read the code top to bottom before running; the comments carry the teaching. The core trick is that each new event cancels the previous deadline and sets a fresh one, so exactly one live timer exists per key.</p>
+      <span class="file-label">~/flink-lab/jobs/inactivity.py</span>
+<pre>import json
+from pyflink.common import WatermarkStrategy, Duration, Types
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.datastream.functions import KeyedProcessFunction, RuntimeContext
+from pyflink.datastream.state import ValueStateDescriptor
+from pyflink.datastream.connectors.file_system import FileSource, StreamFormat
+
+GAP_MS = 30_000
+
+class InactivityDetector(KeyedProcessFunction):
+
+    def open(self, ctx: RuntimeContext):
+        <span class="c"># Runs once per subtask before any data. Declare the state we need:</span>
+        <span class="c"># one long per key, remembering which deadline is currently armed.</span>
+        self.deadline = ctx.get_state(
+            ValueStateDescriptor("deadline", Types.LONG()))
+
+    def process_element(self, value, ctx):
+        <span class="c"># Called for every event; self.deadline is scoped to THIS event's key.</span>
+        old = self.deadline.value()
+        if old is not None:
+            <span class="c"># the user is alive: cancel the pending alarm</span>
+            ctx.timer_service().delete_processing_time_timer(old)
+        new = ctx.timer_service().current_processing_time() + GAP_MS
+        ctx.timer_service().register_processing_time_timer(new)
+        self.deadline.update(new)
+
+    def on_timer(self, timestamp, ctx):
+        <span class="c"># A timer that was never cancelled fired: the user went quiet.</span>
+        yield f"ALERT: {ctx.get_current_key()} inactive for 30s"
+        self.deadline.clear()   <span class="c"># tidy up so state doesn't leak</span>
+
+env = StreamExecutionEnvironment.get_execution_environment()
+env.set_parallelism(1)
+
+src = (FileSource
+       .for_record_stream_format(StreamFormat.text_line_format(),
+                                 "/Users/YOU/flink-lab/flink-data/events")
+       .monitor_continuously(Duration.of_seconds(2)).build())
+
+(env.from_source(src, WatermarkStrategy.no_watermarks(), "clicks")
+    .map(lambda line: json.loads(line))
+    .key_by(lambda e: e["user_id"])
+    .process(InactivityDetector(), output_type=Types.STRING())
+    .print())
+
+env.execute("inactivity_detector")</pre>
+      <p>Run it with the generator on: silence (the alarms keep getting cancelled). Now stop the generator and wait. Thirty seconds later:</p>
+      <span class="out-label">expected output</span>
+<pre class="out">ALERT: ana inactive for 30s
+ALERT: dee inactive for 30s
+ALERT: bo inactive for 30s
+ALERT: cai inactive for 30s</pre>
+      <p>Restart the generator and the cycle re-arms. Notice what you did <em>not</em> write: no polling loop, no shared dictionary of last-seen times, no background thread. The timer service and keyed state carried all of it, and (once checkpointing enters in Module 4) both survive crashes, which your hand-rolled dictionary never would.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m3e3" data-track><label for="m3e3">Detector runs: quiet while events flow, four alerts ~30s after stopping the generator</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Cross the bridge to SQL and back</h4>
+      <p>DataStream and Table API interoperate in both directions, which is how real jobs get built: SQL for the relational middle, DataStream for gnarly edges. Minimal round trip:</p>
+      <span class="file-label">~/flink-lab/jobs/bridge.py</span>
+<pre>from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import StreamTableEnvironment
+
+env = StreamExecutionEnvironment.get_execution_environment()
+env.set_parallelism(1)
+t_env = StreamTableEnvironment.create(env)
+
+ds = env.from_collection([("ana", 10), ("bo", 7), ("ana", 5)])
+
+t_env.create_temporary_view("events", t_env.from_data_stream(ds))
+result = t_env.sql_query(
+    "SELECT f0 AS user_id, SUM(f1) AS total FROM events GROUP BY f0")
+
+<span class="c"># updating result -> must ask for a changelog stream, not an insert-only one</span>
+t_env.to_changelog_stream(result).print()
+env.execute("bridge")</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">+I[ana, 10]
++I[bo, 7]
+-U[ana, 10]
++U[ana, 15]</pre>
+      <p>There it is again: the Module 1 changelog, now printed from Python. If you'd called <code class="inline">to_data_stream</code> instead, Flink would refuse, same reason the filesystem sink refused: an updating result cannot be represented as plain inserts. The rule follows you across every API because it's a property of the query, not the syntax.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m3e4" data-track><label for="m3e4">Round trip done and the changelog rule recognised in its DataStream costume</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>Know how you'd deploy it (awareness, not a chore)</h4>
+      <p>In-process mode is for development. To run a Python job on the Docker cluster you'd use <code class="inline">./bin/flink run --python jobs/inactivity.py</code>, with one catch worth knowing now: the official Flink image contains no Python, so the real path is a small custom image (<code class="inline">FROM flink:2.3.0-java17</code>, apt-install python3, pip install apache-flink) or, in most companies, a platform that's done this for you. Nothing about the code changes. File this away; the course keeps using in-process mode for Python and the SQL client (whose jobs already run on the cluster) for everything else.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m3e5" data-track><label for="m3e5">I know the local-vs-cluster deployment story for PyFlink</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>Why can keyed state only be used after keyBy, mechanically?</li>
-        <li>Your map function keeps a Python dict as a "cache". What is wrong with that under failure and rescaling?</li>
-        <li>What is the difference between a processing-time timer and an event-time timer firing?</li>
+        <li>Why can keyed state only exist after key_by, mechanically?
+          <span class="ans">Keyed state is sharded by the same hash that routes events, and it's only complete/consistent because all events for a key hit one subtask. Without key_by there is no routing guarantee, so per-key state would be scattered and meaningless.</span></li>
+        <li>Your map function keeps a plain Python dict as a cache. Name two ways this betrays you.
+          <span class="ans">It vanishes on failure (not checkpointed, unlike managed state), and it breaks on rescaling (a key's events may move to another subtask whose dict never saw them). Managed keyed state solves both.</span></li>
+        <li>In the detector, why must process_element delete the old timer rather than just registering a new one?
+          <span class="ans">Timers aren't overwritten per key; each registration is independent. Without deletion, every click arms another alarm and an active user would still trigger stale alerts 30s after each click.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 4 ============ -->
 <section class="module" data-module="m4">
   <div class="node">04</div>
@@ -477,43 +931,107 @@ env.execute("hello_datastream")</pre>
     <div class="kicker">Module 4 &middot; week 5</div>
     <h2>State &amp; fault tolerance</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Flink's real product is not stream processing, it's correct stateful stream processing under failure. This week you make checkpoints, break things, recover, and take your first savepoint. All of it works on a laptop because the mechanisms are the same at any scale.</p>
+    <p class="intro">Flink's real product isn't stream processing, it's <em>correct stateful</em> stream processing under failure. This week you configure checkpoints, break the cluster again, watch it recover with state intact this time, and perform your first savepoint-based upgrade: the two operational moves you'll do for the rest of your Flink career.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>Where state actually lives.</strong> Every stateful operator (your GROUP BY, your inactivity detector, every open window) keeps its state in a <em>state backend</em> local to the TaskManager: either on the JVM heap (HashMap backend, fast, bounded by memory) or in embedded RocksDB (on local disk, scales past memory, pays serialisation cost). Flink 2.x adds a third direction, disaggregated state (the ForSt backend), where state lives primarily in remote storage for huge/elastic jobs; know it exists, use the defaults here.</p>
+    <p><strong>Checkpoints: a consistent photograph of a moving system.</strong> On a schedule you set, the JobManager injects <em>barriers</em> into every source. Barriers flow with the data; when a barrier reaches an operator, the operator snapshots its state and passes the barrier on. Because a barrier occupies a fixed position in the stream, the assembled snapshot is consistent: it represents every operator's state as of exactly the same point in the data, plus the source offsets at that point. On failure, Flink restores all state from the last completed checkpoint and rewinds sources to its offsets: replay from a consistent photograph. That mechanism is what "exactly-once state consistency" means: each event affects state exactly once, even across crashes. Note what it doesn't promise: side effects (rows already pushed to an external system) may replay; making <em>end-to-end</em> exactly-once needs a transactional sink, which is Module 5's finale.</p>
+    <p><strong>Checkpoints vs savepoints.</strong> Same snapshot machinery, different ownership. Checkpoints are Flink's: automatic, frequent, deleted as new ones complete, format optimised for fast recovery. Savepoints are yours: manually triggered, kept until you delete them, self-contained and portable, the mechanism for deploys, rescaling, migrations and A/B forks. The slogan worth memorising: checkpoints are for crashes, savepoints are for changes.</p>
+    <div class="anchor-note"><strong>For the Snowflake brain:</strong> Time Travel gives you the illusion that failure-correctness is someone else's problem, because storage is remote, versioned, transactional. In Flink the "table" lives inside your running job, so durability is a protocol you configure, not a property you inherit. A checkpoint is the closest thing to a consistent snapshot across every operator's private table at one logical moment.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m4c1" data-track><label for="m4c1">Keyed state types: ValueState, ListState, MapState, and state TTL</label></li>
-      <li><input type="checkbox" id="m4c2" data-track><label for="m4c2">State backends: HashMap (heap) vs RocksDB vs the newer disaggregated/ForSt direction in Flink 2.x</label></li>
-      <li><input type="checkbox" id="m4c3" data-track><label for="m4c3">Checkpointing: barrier alignment, exactly-once vs at-least-once mode, unaligned checkpoints</label></li>
-      <li><input type="checkbox" id="m4c4" data-track><label for="m4c4">Checkpoints vs savepoints: who owns them, when each is used, and what "exactly-once" actually promises (state, not side effects)</label></li>
-      <li><input type="checkbox" id="m4c5" data-track><label for="m4c5">Restart strategies and how recovery replays from the last checkpoint</label></li>
+      <li><input type="checkbox" class="box" id="m4c1" data-track><label for="m4c1">I can name the state backends and the basic trade (heap vs RocksDB vs disaggregated)</label></li>
+      <li><input type="checkbox" class="box" id="m4c2" data-track><label for="m4c2">I can narrate the barrier mechanism and why the snapshot is consistent</label></li>
+      <li><input type="checkbox" class="box" id="m4c3" data-track><label for="m4c3">I can state precisely what exactly-once does and does not promise</label></li>
+      <li><input type="checkbox" class="box" id="m4c4" data-track><label for="m4c4">Checkpoints are for crashes, savepoints are for changes: I can justify each half</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the Snowflake brain:</strong> Time Travel gives you the illusion that correctness under failure is someone else's problem, because storage is remote, versioned, and transactional. In Flink the state lives inside your job, so durability is a protocol you configure, not a property you inherit. A checkpoint is closest to a consistent snapshot across every operator's local "table" at a single logical point in the stream.</div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <p>Your compose file already points checkpoints and savepoints at <code class="inline">/flink-data</code>, so everything lands on your host disk where you can poke at it.</p>
-    <ul class="chk">
-      <li><input type="checkbox" id="m4e1" data-track><label for="m4e1">Build a stateful dedup job (SQL <code class="inline">ROW_NUMBER()=1</code> pattern, or MapState in PyFlink) over a source that repeats events</label></li>
-      <li><input type="checkbox" id="m4e2" data-track><label for="m4e2">Enable checkpointing every 10s, run the job, and inspect the checkpoint directories appearing under <code class="inline">./flink-data/checkpoints</code></label></li>
-      <li><input type="checkbox" id="m4e3" data-track><label for="m4e3">Repeat the Module 0 chaos drill: kill a TaskManager mid-job and verify results are still correct after recovery<span class="hint">Compare with the Module 0 run. What is different now, and where did the job resume from?</span></label></li>
-      <li><input type="checkbox" id="m4e4" data-track><label for="m4e4">Trigger a savepoint (<code class="inline">./bin/flink savepoint &lt;jobId&gt;</code>), cancel the job, change something small in the query/code, restore from the savepoint</label></li>
-      <li><input type="checkbox" id="m4e5" data-track><label for="m4e5">Set a state TTL on the dedup state and demonstrate an "expired" key being re-admitted</label></li>
-      <li><input type="checkbox" id="m4e6" data-track><label for="m4e6">Read the checkpoint stats in the Web UI for one job: size, duration, alignment time; write two sentences on what would worry you in production</label></li>
-    </ul>
+    <h3>Lab 4.1 &middot; break it again, but survive</h3>
+    <div class="step">
+      <h4><span class="n">STEP 1</span>A stateful job worth protecting</h4>
+      <p>In the SQL client, rebuild the clicks source from Module 2 (remember: in-memory catalog, your DDL is gone; this is the pain that motivates init scripts). Then run a per-user counter with checkpointing on, writing results where you can verify them:</p>
+<pre>SET 'execution.checkpointing.interval' = '10s';
+SET 'sql-client.execution.result-mode' = 'table';
+
+-- recreate the clicks table exactly as in Module 2, then:
+SELECT user_id, COUNT(*) AS clicks FROM clicks GROUP BY user_id;</pre>
+      <p>Start the generator, let counts build to a few hundred, and note the exact values on screen. Meanwhile, watch checkpoints happen: Web UI &rarr; this job &rarr; Checkpoints tab. Every 10 seconds a new entry: end-to-end duration, size, acknowledgment by every subtask. On disk:</p>
+<pre>ls ~/flink-lab/flink-data/checkpoints/</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">3b90c1d4e5…   <span class="c"># one directory per job, containing chk-N subdirs</span></pre>
+      <p>Look inside: <code class="inline">chk-12</code>, <code class="inline">chk-13</code>... with older ones disappearing as new ones complete. That retention policy is the "checkpoints belong to Flink" half of the slogan, physically.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e1" data-track><label for="m4e1">Stateful counter running, checkpoints visible in the UI and on disk</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 2</span>The chaos drill, round two</h4>
+<pre>docker kill flink-lab-taskmanager-1
+docker compose up -d</pre>
+      <p>Same violence as Module 0, opposite outcome. The job restarts, and this time the counts on screen <em>continue from where they were</em>, not from zero: the aggregate state was restored from the last checkpoint and the filesystem source rewound to that checkpoint's read position. Compare the feeling with Module 0's drill; the delta is one SET statement. (Precisely: counts resume from the last checkpoint, at most 10 seconds behind what you saw, then instantly catch up by re-reading the small gap. That rewind-and-replay is the recovery contract.)</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e2" data-track><label for="m4e2">Killed a TaskManager; counts survived and resumed. Recovery contract observed</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 3</span>State TTL: the leak valve</h4>
+      <p>Your counter keeps one row of state per user forever. Four users, who cares; with user ids in the millions (or order ids: unbounded), the job's state grows until it dies. Flink SQL's blunt-but-standard control is a state TTL, after which idle keys are eligible for cleanup:</p>
+<pre>SET 'table.exec.state.ttl' = '1 h';</pre>
+      <p>(Applies to queries planned after it's set.) Understand the trade you're making: expire a user's state and their next click starts a fresh count of 1, i.e. TTL deliberately trades correctness at the margins for bounded state. For the counter that's fine; for a financial dedup it might not be. TTL is a business decision wearing a config option's clothes; treat every unbounded-key stateful query as owing you an answer to "what bounds this state?"</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e3" data-track><label for="m4e3">TTL set and the correctness-vs-growth trade articulated for my query</label></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Lab 4.2 &middot; your first savepoint deploy</h3>
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Stop with a savepoint</h4>
+      <p>The scenario every deploy follows: stop the job while capturing its state, change something, resume from the capture. Get the running job's id, then stop-with-savepoint:</p>
+<pre>docker compose exec jobmanager ./bin/flink list</pre>
+      <span class="out-label">expected output</span>
+<pre class="out">------------------ Running/Restarting Jobs -------------------
+29.08.2026 06:12:01 : d4c1f0a2…  : collect (RUNNING)</pre>
+<pre>docker compose exec jobmanager ./bin/flink stop \
+  --savepointPath /flink-data/savepoints d4c1f0a2…</pre>
+      <p><code class="inline">stop</code> (as opposed to <code class="inline">cancel</code>) drains the job gracefully: it takes a final consistent snapshot to the given path, then shuts the job down. The command prints the savepoint's full path; copy it. Confirm it exists on your host under <code class="inline">~/flink-lab/flink-data/savepoints/</code>, and notice it does not get auto-deleted, ever. It's yours now.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e4" data-track><label for="m4e4">Job stopped with a savepoint; path captured; directory inspected</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>Change the job, restore the state</h4>
+      <p>In the SQL client, point the next query at the savepoint, then run a <em>modified</em> version of the job: same aggregation, new filter (the kind of tweak a real deploy carries):</p>
+<pre>SET 'execution.state-recovery.path' =
+  'file:///flink-data/savepoints/savepoint-d4c1f0-abc123';
+
+SELECT user_id, COUNT(*) AS clicks
+FROM clicks
+WHERE url &lt;&gt; '/page/9'
+GROUP BY user_id;</pre>
+      <p>(On older 1.x clusters this option was <code class="inline">execution.savepoint.path</code>; 2.x renamed it.) The counts resume from their savepointed values rather than zero: state survived a code change. This works because the aggregation operator is the same shape; change the query's structure too much and Flink can't match old state to new operators, which is why production SQL jobs on Flink pin operator-affecting changes carefully. Unset it afterwards so later queries start fresh:</p>
+<pre>RESET 'execution.state-recovery.path';</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e5" data-track><label for="m4e5">Restored a modified query from the savepoint; counts continued</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 6</span>Read a checkpoint like an operator</h4>
+      <p>Back in the Web UI's Checkpoints tab for any running stateful job, read three numbers the way on-call you will: <em>end-to-end duration</em> (creeping up means barriers are stuck behind slow processing: backpressure's shadow), <em>checkpointed data size</em> (a steady climb on a query that should have bounded state means a leak: revisit TTL), and <em>alignment/async duration split</em>. Write two sentences in your notes on what trend in each would page you. This tiny habit is most of Flink operations.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m4e6" data-track><label for="m4e6">Checkpoint stats read and my two-sentence paging criteria written down</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>Exactly-once checkpointing is on, yet your sink wrote duplicates. Name two legitimate reasons.</li>
-        <li>Why are savepoints the upgrade mechanism while checkpoints are the recovery mechanism?</li>
-        <li>What grows unboundedly in a keyed job with no TTL and an unbounded key space, and what are your options?</li>
+        <li>Exactly-once checkpointing is on, yet a downstream system saw duplicates. Two legitimate explanations?
+          <span class="ans">(1) The sink isn't transactional: replay after recovery re-emitted rows the external system already received. (2) Consumers read uncommitted data (e.g. Kafka without read_committed). Exactly-once covers state; end-to-end needs sink cooperation.</span></li>
+        <li>Why are savepoints the deploy mechanism and checkpoints the crash mechanism, given they're the same snapshot?
+          <span class="ans">Ownership and lifecycle: checkpoints are auto-created, auto-deleted, format-optimised for fast recovery of the same job; savepoints are user-triggered, retained, self-contained, designed to restore into changed/rescaled jobs.</span></li>
+        <li>A keyed job has unbounded keys and no TTL. What grows, and name three options.
+          <span class="ans">Keyed state grows monotonically with distinct keys. Options: state TTL, restructure to windowed aggregation (state expires with windows), or move to a backend/design that tolerates the size (RocksDB / disaggregated state) while accepting cost.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 5 ============ -->
 <section class="module" data-module="m5">
   <div class="node">05</div>
@@ -521,12 +1039,27 @@ env.execute("hello_datastream")</pre>
     <div class="kicker">Module 5 &middot; week 6</div>
     <h2>Kafka in, Kafka out</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Kafka is Flink's native habitat, and it turns your theoretical Kafka knowledge into muscle memory. You'll add a single-node KRaft broker to the lab, stream JSON through Flink SQL, and finish with end-to-end exactly-once using Kafka transactions.</p>
+    <p class="intro">Kafka is Flink's native habitat, and this week your theoretical Kafka knowledge becomes muscle memory. You'll add a broker to the lab, stream JSON through Flink SQL, meet the upsert-kafka sink that finally accepts your updating queries, and finish with end-to-end exactly-once, verified by trying to break it.</p>
   </div>
 
   <div class="block">
-    <h3>Extend the lab</h3>
-    <p>Add to your compose file:</p>
+    <h3>The ideas</h3>
+    <p><strong>Offsets: Flink trusts itself, not Kafka.</strong> The Kafka source records the partition offsets it has reached <em>inside every checkpoint</em>. On recovery it seeks to the checkpointed offsets, guaranteeing the rewind lines up exactly with the restored state. It also commits offsets to Kafka's consumer-group machinery, but only as a courtesy for monitoring tools; those commits are never the recovery source of truth. If you remember one Kafka-connector fact, make it this one.</p>
+    <p><strong>Two sinks for two stream shapes.</strong> The plain <code class="inline">kafka</code> connector appends records to a topic: perfect for append-only results (raw events, closed windows). The <code class="inline">upsert-kafka</code> connector accepts <em>updating</em> streams by writing each change as a keyed record (latest value per key; deletes become tombstones) to a topic you should configure as compacted. A compacted topic whose latest-value-per-key is a table: exactly the state-topic pattern from your earlier Kafka reading, now produced by SQL.</p>
+    <p><strong>End-to-end exactly-once = checkpoints + Kafka transactions.</strong> Module 4 established that replay can duplicate side effects. The Kafka sink closes the gap with two-phase commit: it writes output inside a Kafka transaction and commits that transaction only when the Flink checkpoint completes, so output becomes visible atomically with the recovery point. Consumers must opt in by reading <code class="inline">read_committed</code>, otherwise they see uncommitted (possibly doomed) rows. The cost is latency: output is only visible per checkpoint interval. Exactly-once is not a checkbox, it's a contract between checkpointing, the sink, and every consumer.</p>
+    <ul class="chk">
+      <li><input type="checkbox" class="box" id="m5c1" data-track><label for="m5c1">I can explain why checkpointed offsets, not consumer-group commits, drive recovery</label></li>
+      <li><input type="checkbox" class="box" id="m5c2" data-track><label for="m5c2">I can choose between kafka and upsert-kafka sinks from a query's changelog shape</label></li>
+      <li><input type="checkbox" class="box" id="m5c3" data-track><label for="m5c3">I can narrate the two-phase commit dance and name its latency cost</label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Lab 5.1 &middot; extend the lab</h3>
+    <div class="step">
+      <h4><span class="n">STEP 1</span>Add a KRaft broker</h4>
+      <p>Append this service to your compose file. It's a single-node Kafka using KRaft (no ZooKeeper), and the listener block is the part everyone gets wrong, so here's the logic: containers on the compose network reach the broker as <code class="inline">kafka:29092</code>; your laptop reaches it as <code class="inline">localhost:9092</code>; Kafka must <em>advertise</em> each address on the matching listener or clients get redirected to a hostname they can't resolve.</p>
+      <span class="file-label">docker-compose.yml (append under services:)</span>
 <pre>  kafka:
     image: apache/kafka:3.9.0
     ports:
@@ -539,34 +1072,152 @@ env.execute("hello_datastream")</pre>
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,EXTERNAL://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1</pre>
-    <p>Then drop the Kafka SQL connector jar (grab <code class="inline">flink-sql-connector-kafka</code> for your Flink 2.x line from the downloads page) into <code class="inline">/opt/flink/lib</code> on both Flink containers, or mount it, and restart them.</p>
-    <ul class="chk">
-      <li><input type="checkbox" id="m5s1" data-track><label for="m5s1">Broker up, connector jar in place, and a smoke test: create a topic and produce/consume with the console tools or kcat</label></li>
-    </ul>
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1</pre>
+      <p>The last two lines matter later: transaction state normally wants 3 replicas; a single-node lab must say 1 or exactly-once will fail with cryptic ISR errors. Start it and smoke-test with the console tools shipped in the image:</p>
+<pre>docker compose up -d
+docker compose exec kafka /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 --create --topic orders --partitions 3
+docker compose exec kafka /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 --list</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5s1" data-track><label for="m5s1">Broker up, orders topic created and listed</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 2</span>Install the Kafka connector for Flink</h4>
+      <p>Connectors ship separately from Flink. Download the fat SQL connector jar into your mounted <code class="inline">lib/</code> directory; check the Flink downloads page (or Maven Central, artifact <code class="inline">flink-sql-connector-kafka</code>) for the release matching your Flink 2.x line, then:</p>
+<pre>cd ~/flink-lab/lib
+curl -LO https://repo.maven.apache.org/maven2/org/apache/flink/\
+flink-sql-connector-kafka/&lt;VERSION&gt;/flink-sql-connector-kafka-&lt;VERSION&gt;.jar</pre>
+      <p>Then in every new SQL client session, load it with:</p>
+<pre>ADD JAR '/opt/flink/extra-lib/flink-sql-connector-kafka-&lt;VERSION&gt;.jar';</pre>
+      <p><code class="inline">ADD JAR</code> ships the jar with each job you submit, which suits a lab. (The production alternative: drop jars into <code class="inline">/opt/flink/lib</code> and restart the cluster, so they're on every classpath permanently.) This is also the moment to start an init file: put the ADD JAR plus your CREATE TABLE statements into <code class="inline">~/flink-lab/jobs/init.sql</code> and launch the client with <code class="inline">./bin/sql-client.sh -i /opt/flink/usrlib/init.sql</code>, ending the Module 4 pain of retyping DDL.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5s2" data-track><label for="m5s2">Connector jar downloaded, ADD JAR works, init.sql habit started</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 3</span>A real producer</h4>
+      <span class="file-label">~/flink-lab/scripts/ordergen.py &nbsp;(pip install kafka-python-ng)</span>
+<pre>import json, random, time, uuid
+from datetime import datetime, timedelta, timezone
+from kafka import KafkaProducer
+
+p = KafkaProducer(bootstrap_servers="localhost:9092",
+                  key_serializer=str.encode,
+                  value_serializer=lambda v: json.dumps(v).encode())
+
+while True:
+    ts = datetime.now(timezone.utc)
+    if random.random() &lt; 0.15:                       <span class="c"># out-of-order tail</span>
+        ts -= timedelta(seconds=random.randint(1, 8))
+    cust = f"c{random.randint(1, 5)}"
+    p.send("orders", key=cust, value={
+        "order_id": uuid.uuid4().hex[:8],
+        "customer_id": cust,
+        "amount": round(random.uniform(1, 500), 2),
+        "order_time": ts.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    })
+    time.sleep(0.3)</pre>
+      <p>Keying by customer means each customer's orders live in one partition, in order: the same key&rarr;partition discipline as Flink's key_by, applied at the Kafka layer. Run it, then verify with a console consumer before involving Flink at all (isolate layers when debugging: always prove Kafka works before blaming Flink):</p>
+<pre>docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 --topic orders --from-beginning --max-messages 3</pre>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5e1" data-track><label for="m5e1">Producer running; messages verified with the console consumer</label></div>
+    </div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <ul class="chk">
-      <li><input type="checkbox" id="m5e1" data-track><label for="m5e1">Write a small Python producer that emits JSON order events (with occasional out-of-order timestamps) to topic <code class="inline">orders</code></label></li>
-      <li><input type="checkbox" id="m5e2" data-track><label for="m5e2">Define a Kafka source table over <code class="inline">orders</code> with an event-time watermark; re-run your Module 2 window queries against real Kafka</label></li>
-      <li><input type="checkbox" id="m5e3" data-track><label for="m5e3">Sink windowed revenue to a plain <code class="inline">kafka</code> sink topic, and per-customer running revenue to an <code class="inline">upsert-kafka</code> topic; consume both and compare their shapes<span class="hint">Compacted-topic-as-table: this should rhyme with your earlier Kafka state-topic reading.</span></label></li>
-      <li><input type="checkbox" id="m5e4" data-track><label for="m5e4">Turn on exactly-once delivery to Kafka (transactional sink) and read the output with <code class="inline">read_committed</code> isolation</label></li>
-      <li><input type="checkbox" id="m5e5" data-track><label for="m5e5">Kill a TaskManager during the exactly-once run and verify the consumer saw no duplicates and no gaps</label></li>
-      <li><input type="checkbox" id="m5e6" data-track><label for="m5e6">Watch consumer group offsets vs Flink's own checkpointed offsets; explain which one Flink actually trusts on recovery</label></li>
-    </ul>
+    <h3>Lab 5.2 &middot; SQL over Kafka, then exactly-once</h3>
+    <div class="step">
+      <h4><span class="n">STEP 4</span>Kafka source table with event time</h4>
+<pre>CREATE TABLE orders_k (
+  order_id    STRING,
+  customer_id STRING,
+  amount      DECIMAL(10,2),
+  order_time  TIMESTAMP(3),
+  WATERMARK FOR order_time AS order_time - INTERVAL '10' SECOND
+) WITH (
+  'connector' = 'kafka',
+  'topic' = 'orders',
+  'properties.bootstrap.servers' = 'kafka:29092',
+  'properties.group.id' = 'flink-lab',
+  'scan.startup.mode' = 'earliest-offset',
+  'format' = 'json'
+);</pre>
+      <p>Notes: the bootstrap server is the <em>internal</em> listener (Flink runs inside the compose network). <code class="inline">scan.startup.mode</code> only governs where a <em>fresh</em> job starts; restored jobs use checkpointed offsets, per the ideas section. Re-run your Module 2 tumbling-window revenue query against <code class="inline">orders_k</code> and confirm your watermark understanding transfers wholesale to a real broker, including per-partition watermarks merging on the minimum (pause the producer and watch windows stall: partitions gone idle).</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5e2" data-track><label for="m5e2">Windowed aggregates running over real Kafka; idle-partition stall reproduced</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>The upsert sink: updating queries finally land</h4>
+<pre>CREATE TABLE revenue_by_customer (
+  customer_id STRING,
+  revenue     DECIMAL(12,2),
+  PRIMARY KEY (customer_id) NOT ENFORCED
+) WITH (
+  'connector' = 'upsert-kafka',
+  'topic' = 'revenue_by_customer',
+  'properties.bootstrap.servers' = 'kafka:29092',
+  'key.format' = 'json',
+  'value.format' = 'json'
+);
+
+INSERT INTO revenue_by_customer
+SELECT customer_id, SUM(amount) FROM orders_k GROUP BY customer_id;</pre>
+      <p>The PRIMARY KEY declaration (NOT ENFORCED: Flink won't police it, it's routing metadata) tells the sink which columns become the Kafka record key; each -U/+U pair collapses into one new record for that key. Watch the topic and you'll see per-customer totals being re-emitted as they grow:</p>
+<pre>docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 --topic revenue_by_customer \
+  --property print.key=true --from-beginning</pre>
+      <span class="out-label">expected output (each key's latest line is the current truth)</span>
+<pre class="out">{"customer_id":"c3"}   {"customer_id":"c3","revenue":812.40}
+{"customer_id":"c1"}   {"customer_id":"c1","revenue":1204.11}
+{"customer_id":"c3"}   {"customer_id":"c3","revenue":977.02}</pre>
+      <p>Module 1's rejected INSERT, redeemed: the sink absorbs updates because the medium (keyed log) can represent them.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5e3" data-track><label for="m5e3">Updating aggregate flowing into upsert-kafka; latest-per-key semantics observed</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 6</span>End-to-end exactly-once, then attack it</h4>
+      <p>Route the windowed (append-only) revenue to a plain Kafka sink under transactions:</p>
+<pre>SET 'execution.checkpointing.interval' = '10s';
+
+CREATE TABLE minute_revenue (
+  window_start TIMESTAMP(3), window_end TIMESTAMP(3),
+  revenue DECIMAL(12,2)
+) WITH (
+  'connector' = 'kafka',
+  'topic' = 'minute_revenue',
+  'properties.bootstrap.servers' = 'kafka:29092',
+  'format' = 'json',
+  'sink.delivery-guarantee' = 'exactly-once',
+  'sink.transactional-id-prefix' = 'lab-minute-rev'
+);
+
+INSERT INTO minute_revenue
+SELECT window_start, window_end, SUM(amount)
+FROM TABLE(TUMBLE(TABLE orders_k, DESCRIPTOR(order_time), INTERVAL '1' MINUTE))
+GROUP BY window_start, window_end;</pre>
+      <p><code class="inline">sink.delivery-guarantee</code> switches on the two-phase commit; the transactional-id prefix must be unique per sink (Kafka fences zombie producers by these ids after recovery, which is what makes replayed transactions safe). Consume it twice, once each way:</p>
+<pre>docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 --topic minute_revenue \
+  --isolation-level read_committed</pre>
+      <p>With <code class="inline">read_committed</code>, rows appear in bursts on checkpoint boundaries (visibility = commit = checkpoint: the latency you were promised). Without the flag (default read_uncommitted), rows appear sooner but include provisional data a failure could orphan. Now the attack: while both consumer and job run, <code class="inline">docker kill</code> a TaskManager, bring it back, let a few windows pass, and audit the read_committed output: every minute present exactly once, no gaps, no duplicates, despite a crash mid-stream. That audit is the whole point of the week.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m5e4" data-track><label for="m5e4">Exactly-once verified under a kill: read_committed output has no gaps, no dupes</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>Why does Flink commit Kafka offsets only as a courtesy, and what is the source of truth?</li>
-        <li>What do Kafka transactions cost you in end-to-end latency, and what setting couples them to checkpoints?</li>
-        <li>When is upsert-kafka the right sink and when is it a trap?</li>
+        <li>After recovery, Kafka's consumer-group lag tool shows a weird jump for flink-lab. Why might it, and why is it not an incident?
+          <span class="ans">Group commits are a best-effort courtesy made on checkpoints; recovery seeks to checkpointed offsets regardless, so the group's committed position can lag or jump. The job's correctness never depended on it.</span></li>
+        <li>What couples output visibility to checkpoint interval in exactly-once mode, and what's the tuning tension?
+          <span class="ans">Transactions commit on checkpoint completion, so consumers see data at checkpoint cadence. Shorter intervals cut latency but raise checkpoint overhead; longer intervals do the reverse.</span></li>
+        <li>When is upsert-kafka the right sink and when is it a trap?
+          <span class="ans">Right when downstream wants current-state-per-key (a table view, cache feeding, CDC-style handoff). A trap when downstream needs full history/every change (compaction may collapse intermediate values) or when there's no meaningful primary key.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 6 ============ -->
 <section class="module" data-module="m6">
   <div class="node">06</div>
@@ -574,40 +1225,134 @@ env.execute("hello_datastream")</pre>
     <div class="kicker">Module 6 &middot; week 7</div>
     <h2>Joins, CDC &amp; the table ecosystem</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Real pipelines join streams against other streams and against slowly changing reference data, and increasingly they start from database changelogs. This week: the streaming join family, Flink CDC against a local Postgres, and a look at where results should land.</p>
+    <p class="intro">Real pipelines join streams against other streams and against slowly changing reference data, and increasingly they begin at a database's changelog. This week: the streaming join family ranked by what each costs, Flink CDC against a local Postgres, and the temporal join, which is your Kimball training's favourite Flink feature.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>Joins differ by how much of the past they must remember.</strong> In batch, a join scans two finite tables. In streaming, a row arriving now might match a row arriving next year, so the join type is really a policy about state:</p>
+    <table class="teach">
+      <tr><th>join</th><th>semantics</th><th>state cost</th><th>reach for it when</th></tr>
+      <tr><td>regular</td><td>standard SQL join, both sides fully remembered</td><td>unbounded: both inputs kept forever (or until TTL)</td><td>rarely as-is; usually a smell unless inputs are small/bounded</td></tr>
+      <tr><td>interval</td><td>match rows within an event-time window of each other</td><td>bounded: state expires as watermarks pass the interval</td><td>two event streams with a natural time affinity (order&rarr;payment within 15 min)</td></tr>
+      <tr><td>temporal</td><td>enrich a stream with a versioned table <em>as of the row's event time</em></td><td>bounded-ish: versions retained until watermark says they're unreachable</td><td>facts &times; changing dimensions; correctness against history</td></tr>
+      <tr><td>lookup</td><td>per-row query against an external system at processing time</td><td>none in Flink (optional cache)</td><td>freshest-value enrichment, large dimensions, tolerable external load</td></tr>
+    </table>
+    <p><strong>CDC turns your OLTP database into a stream.</strong> A CDC source (Flink CDC, currently the 3.6 line, built on Debezium) does two phases: an initial consistent <em>snapshot</em> of the table, then a seamless switch to tailing the write-ahead log, emitting every subsequent INSERT/UPDATE/DELETE as +I / -U/+U / -D rows. Which is to say: a CDC table is a natively <em>updating</em> table, and everything you learned about changelogs applies with no new theory. Downstream aggregates consume the -U/+U pairs to stay correct as source rows change.</p>
+    <div class="anchor-note"><strong>For the Kimball brain:</strong> a temporal join against a versioned table is a Type 2 SCD lookup performed continuously: "join each fact to the dimension version that was current at the fact's event time." The versioned table is the SCD2 dimension, maintained for you by CDC; the FOR SYSTEM_TIME AS OF clause is your effective-date BETWEEN join, evaluated per event, forever. Once that clicks, temporal joins stop being exotic and start being obviously necessary.</div>
     <ul class="chk">
-      <li><input type="checkbox" id="m6c1" data-track><label for="m6c1">The join family and their state cost: regular (unbounded state), interval, temporal (versioned tables), lookup</label></li>
-      <li><input type="checkbox" id="m6c2" data-track><label for="m6c2">CDC concepts: snapshot + binlog/WAL phases, changelog to upsert semantics, Flink CDC (3.6) sources and YAML pipelines</label></li>
-      <li><input type="checkbox" id="m6c3" data-track><label for="m6c3">Where results land: upsert-kafka, JDBC, and lakehouse tables (Paimon / Iceberg), plus Flink 2.x materialized tables as awareness</label></li>
+      <li><input type="checkbox" class="box" id="m6c1" data-track><label for="m6c1">I can rank the four joins by state footprint and justify each ranking</label></li>
+      <li><input type="checkbox" class="box" id="m6c2" data-track><label for="m6c2">I can describe CDC's snapshot phase, log phase, and changelog output shape</label></li>
+      <li><input type="checkbox" class="box" id="m6c3" data-track><label for="m6c3">I can map temporal joins onto SCD2 semantics without notes</label></li>
     </ul>
-    <div class="anchor-note"><strong>For the Kimball brain:</strong> a temporal join against a versioned table is a Type 2 SCD lookup performed continuously: "join each fact to the dimension row that was current at the fact's event time." Once that clicks, temporal joins stop being exotic and start being obviously necessary.</div>
   </div>
 
   <div class="block">
-    <h3>Exercises</h3>
-    <p>Add a <code class="inline">postgres:16</code> service to the lab with <code class="inline">wal_level=logical</code> (set via command flag), create a <code class="inline">customers</code> table, and drop the Postgres CDC connector jar into the Flink containers.</p>
-    <ul class="chk">
-      <li><input type="checkbox" id="m6e1" data-track><label for="m6e1">Regular join: orders stream &times; payments stream on order_id; watch state grow in the UI and articulate why this is dangerous unbounded<span class="hint">Then bound it: rewrite as an interval join (payment within 15 minutes of order).</span></label></li>
-      <li><input type="checkbox" id="m6e2" data-track><label for="m6e2">CDC source over <code class="inline">customers</code>: watch the snapshot phase, then UPDATE a row in psql and see the change arrive</label></li>
-      <li><input type="checkbox" id="m6e3" data-track><label for="m6e3">Temporal join: enrich the orders stream with the customer's segment as of the order's event time; verify by changing a segment mid-stream</label></li>
-      <li><input type="checkbox" id="m6e4" data-track><label for="m6e4">Lookup join variant against Postgres via the JDBC connector; contrast freshness and load profile with the temporal join</label></li>
-      <li><input type="checkbox" id="m6e5" data-track><label for="m6e5">Optional stretch: sink the enriched stream to a local Apache Paimon table on the filesystem and query it from a batch Flink session</label></li>
-    </ul>
+    <h3>Lab 6.1 &middot; joins between streams</h3>
+    <div class="step">
+      <h4><span class="n">STEP 1</span>Feel the unbounded join, then bound it</h4>
+      <p>Create a <code class="inline">payments</code> topic and extend ordergen (or write a sibling script) to emit a payment for ~90% of orders after a 5&ndash;60 second delay, keyed by order_id, with fields order_id, paid_amount, pay_time (declare a Kafka table <code class="inline">payments_k</code> over it, watermarked on pay_time, mirroring <code class="inline">orders_k</code>). First the naive join:</p>
+<pre>SELECT o.order_id, o.amount, p.paid_amount
+FROM orders_k o
+JOIN payments_k p ON o.order_id = p.order_id;</pre>
+      <p>It works, and it's a trap: run it for a few minutes, open the job's checkpoint tab, and watch checkpointed size climb linearly and forever, because both entire streams are being remembered (any future payment may match any past order, says plain SQL semantics). Now express what the business actually means, that payments arrive within 15 minutes:</p>
+<pre>SELECT o.order_id, o.amount, p.paid_amount
+FROM orders_k o, payments_k p
+WHERE o.order_id = p.order_id
+  AND p.pay_time BETWEEN o.order_time AND o.order_time + INTERVAL '15' MINUTE;</pre>
+      <p>Same results for well-behaved data, but the time predicate lets Flink expire state as watermarks advance: re-check the checkpoint tab and watch size plateau. One WHERE clause is the difference between a pipeline and a slow-motion outage; the interval join is the professional default between two event streams.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m6e1" data-track><label for="m6e1">Watched regular-join state grow without bound, then plateau as an interval join</label></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Lab 6.2 &middot; CDC and the temporal join</h3>
+    <div class="step">
+      <h4><span class="n">STEP 2</span>Add Postgres with logical replication</h4>
+      <span class="file-label">docker-compose.yml (append under services:)</span>
+<pre>  postgres:
+    image: postgres:16
+    ports: ["5432:5432"]
+    command: postgres -c wal_level=logical
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: lab</pre>
+      <p><code class="inline">wal_level=logical</code> is the whole trick: it makes Postgres write enough detail into its WAL for external decoders to reconstruct row-level changes, which is what CDC tails. Start it, then seed a dimension:</p>
+<pre>docker compose up -d
+docker compose exec -it postgres psql -U lab -d lab -c "
+CREATE TABLE customers (
+  customer_id TEXT PRIMARY KEY,
+  segment     TEXT NOT NULL,
+  updated_at  TIMESTAMP NOT NULL DEFAULT now());
+INSERT INTO customers VALUES
+  ('c1','smb',now()),('c2','smb',now()),('c3','mid',now()),
+  ('c4','mid',now()),('c5','enterprise',now());"</pre>
+      <p>Also download <code class="inline">flink-sql-connector-postgres-cdc</code> (the Flink CDC 3.6 line) into <code class="inline">~/flink-lab/lib/</code> and ADD JAR it, same routine as Kafka's connector.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m6e2" data-track><label for="m6e2">Postgres up with logical WAL, customers seeded, CDC jar loaded</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 3</span>Watch a database become a stream</h4>
+<pre>CREATE TABLE customers_cdc (
+  customer_id STRING,
+  segment     STRING,
+  updated_at  TIMESTAMP(3),
+  PRIMARY KEY (customer_id) NOT ENFORCED,
+  WATERMARK FOR updated_at AS updated_at - INTERVAL '5' SECOND
+) WITH (
+  'connector' = 'postgres-cdc',
+  'hostname' = 'postgres', 'port' = '5432',
+  'username' = 'lab', 'password' = 'lab',
+  'database-name' = 'lab', 'schema-name' = 'public',
+  'table-name' = 'customers',
+  'slot.name' = 'flink_lab',
+  'decoding.plugin.name' = 'pgoutput'
+);</pre>
+      <p>The last two options: a replication <em>slot</em> is Postgres's bookmark guaranteeing WAL is retained until this consumer has read it (drop the slot if you delete this table for good, or WAL accumulates); <code class="inline">pgoutput</code> is Postgres's built-in logical decoder, so no server plugins to install. Now, in changelog mode:</p>
+<pre>SELECT * FROM customers_cdc;</pre>
+      <span class="out-label">expected output: snapshot phase, then live phase as you run updates in psql</span>
+<pre class="out"> op | customer_id | segment    | updated_at
+ +I | c1          | smb        | 2026-08-29 06:41:02.113   <span class="c">&larr; snapshot rows</span>
+ +I | c2          | smb        | …
+ -U | c3          | mid        | …                          <span class="c">&larr; after: UPDATE customers</span>
+ +U | c3          | enterprise | 2026-08-29 06:44:17.905      SET segment='enterprise',
+                                                                  updated_at=now()
+                                                                WHERE customer_id='c3';</pre>
+      <p>Run that UPDATE in psql and watch the -U/+U pair arrive within a second or two. Module 1's changelog table, produced by a database this time. One idea, every source.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m6e3" data-track><label for="m6e3">Snapshot then live changes observed; the -U/+U pair traced to a psql UPDATE</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 4</span>The temporal join</h4>
+      <p><code class="inline">customers_cdc</code> qualifies as a <em>versioned table</em>: it has a primary key and a watermark, so Flink can maintain its versions over time. Enrich orders with the segment that was true when each order happened:</p>
+<pre>SELECT o.order_id, o.amount, c.segment
+FROM orders_k o
+LEFT JOIN customers_cdc FOR SYSTEM_TIME AS OF o.order_time AS c
+  ON o.customer_id = c.customer_id;</pre>
+      <p>Verify the "as of" is real with a controlled experiment: note the time, flip c2's segment in psql, and confirm that orders timestamped <em>before</em> your update still join to the old segment while later orders get the new one. Also notice enriched rows only emit as watermarks advance on <em>both</em> inputs: the join must be sure no older dimension version can still arrive before it commits to one. If the dimension goes quiet, output stalls: Module 2's minimum-watermark rule, now with a business consequence (this is why production versioned dims care about idleness settings).</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m6e4" data-track><label for="m6e4">Proved as-of semantics across a mid-stream segment change</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">STEP 5</span>The lookup join, for contrast</h4>
+      <p>Add the <code class="inline">flink-connector-jdbc</code> jar plus the Postgres JDBC driver to <code class="inline">lib/</code>, define a plain JDBC table over customers, add a processing-time column to orders (<code class="inline">proc AS PROCTIME()</code>), and join <code class="inline">FOR SYSTEM_TIME AS OF o.proc</code>. Each order triggers a keyed query against Postgres (cache options exist: <code class="inline">lookup.cache.*</code>). Contrast with step 4: the lookup join answers "what is the segment <em>now</em>?" with zero Flink state and per-row external load; the temporal join answers "what <em>was</em> it then?" from internally maintained versions. Neither is better; they answer different questions, and interviews love asking which you'd pick.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m6e5" data-track><label for="m6e5">Lookup join running; now-vs-then distinction articulated in my notes</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>self-test: 3 questions before you move on</summary>
+      <summary>self-test (answers included, but think first)</summary>
       <ol>
-        <li>Rank the four join types by state footprint and explain each ranking.</li>
-        <li>Why does a CDC source emit -U/+U pairs, and what must a downstream aggregate do with them?</li>
-        <li>Your temporal join returns nulls for early events. What about watermarks explains this?</li>
+        <li>Why does a CDC source emit -U before +U, and what breaks downstream if the -U is dropped?
+          <span class="ans">The retraction tells stateful consumers to subtract the old version before adding the new. Drop it and any aggregate over the table double-counts: SUM(segment totals) would count c3 in both mid and enterprise.</span></li>
+        <li>Your temporal join outputs nothing for the first minute after startup. Likeliest benign cause?
+          <span class="ans">Watermarks: the join waits until both sides' watermarks pass an order's time before emitting, and fresh sources need events to advance them (the dimension side especially, being low-traffic).</span></li>
+        <li>Orders is high-volume; customers has 50M rows changing rarely, and you need enrichment as-of-now. Which join and why?
+          <span class="ans">Lookup join with caching: no Flink state for a huge dimension, as-of-now semantics wanted anyway, and rare changes make caching effective. Temporal would force Flink to hold versions of 50M keys.</span></li>
       </ol>
     </details>
   </div>
 </section>
-
 <!-- ============ MODULE 7 ============ -->
 <section class="module" data-module="m7">
   <div class="node">07</div>
@@ -615,35 +1360,73 @@ env.execute("hello_datastream")</pre>
     <div class="kicker">Module 7 &middot; week 8</div>
     <h2>Operations &amp; the capstone</h2>
     <div class="modprog" data-modprog></div>
-    <p class="intro">Finish by operating Flink like you'd have to at work: read backpressure, reason about parallelism, and run one end-to-end pipeline that survives everything you throw at it. This capstone is deliberately shaped like a serving-layer feed you might one day build for real.</p>
+    <p class="intro">Finish by operating Flink the way you'd have to at work: read backpressure, rescale from a savepoint, and run one end-to-end pipeline that survives everything you throw at it. Nothing new is introduced here except operational judgment; the capstone is assembled entirely from parts you've already built.</p>
   </div>
 
   <div class="block">
-    <h3>Concepts to internalise</h3>
+    <h3>The ideas</h3>
+    <p><strong>Backpressure is the system telling you where it hurts.</strong> Flink's network buffers are finite; when an operator can't keep up, buffers to it fill, and upstream operators slow down in a chain reaching back to the sources. The Web UI colours each operator by its busy/backpressured/idle percentages: read a backpressured graph from the <em>sink end backwards</em>, because the first non-backpressured, fully-busy operator downstream of the red ones is your bottleneck. Backpressure isn't an error, it's flow control working; sustained backpressure is a capacity problem wearing a UI colour.</p>
+    <p><strong>Rescaling is a savepoint round trip.</strong> Parallelism isn't changed live: you stop with a savepoint and resume with a new parallelism, and Flink redistributes keyed state across the new subtasks. The hidden constant is <em>max parallelism</em> (default 128): keyed state is physically bucketed into that many key groups, which are the units reassigned during rescaling, so you can never scale beyond it without discarding state. Set it generously at job birth; it's the one setting you can't change later cheaply.</p>
+    <p><strong>What to watch in production</strong>, translated to the four questions they answer: Is data flowing? (records in/out per operator, source idle time). Is it keeping up? (backpressure, busy ratios, Kafka records-lag-max). Is it healthy? (checkpoint duration/size trends, restart count). Is it fresh? (watermark lag = wall clock minus current watermark, the single best "how far behind is the business seeing reality" number). All of these export via Flink's metric reporters to your monitoring stack; sketching NRQL for watermark lag against a threshold is a worthwhile ten-minute exercise given your New Relic muscle.</p>
     <ul class="chk">
-      <li><input type="checkbox" id="m7c1" data-track><label for="m7c1">Backpressure: how to spot it in the UI, busy/idle/backpressured metrics, and typical causes</label></li>
-      <li><input type="checkbox" id="m7c2" data-track><label for="m7c2">Parallelism and rescaling: max parallelism, key groups, rescaling from a savepoint</label></li>
-      <li><input type="checkbox" id="m7c3" data-track><label for="m7c3">Deployment modes: session vs application mode, and awareness of the Kubernetes operator for production</label></li>
-      <li><input type="checkbox" id="m7c4" data-track><label for="m7c4">Metrics you'd alert on: checkpoint duration/size trend, watermark lag, records-lag-max, restart count<span class="hint">Sketch how you'd wire these into your existing New Relic habits.</span></label></li>
+      <li><input type="checkbox" class="box" id="m7c1" data-track><label for="m7c1">I can locate a bottleneck from backpressure colours, reading from the sink backwards</label></li>
+      <li><input type="checkbox" class="box" id="m7c2" data-track><label for="m7c2">I can explain key groups, max parallelism, and the rescale-via-savepoint procedure</label></li>
+      <li><input type="checkbox" class="box" id="m7c3" data-track><label for="m7c3">I have my four production questions and one metric for each</label></li>
     </ul>
   </div>
 
   <div class="block">
-    <h3>Capstone: the sessionised revenue feed</h3>
-    <p>Build one pipeline, end to end, on your laptop: Python generator &rarr; Kafka <code class="inline">clickstream</code> and <code class="inline">orders</code> topics &rarr; Flink job that (a) sessionises clicks per user with a 30-minute gap, (b) enriches orders with the customer's CDC-fed segment via temporal join, (c) emits per-segment revenue per session window &rarr; upsert-kafka <code class="inline">segment_revenue</code>, exactly-once, checkpointed. Then operate it:</p>
-    <ul class="chk">
-      <li><input type="checkbox" id="m7e1" data-track><label for="m7e1">Pipeline runs green for 30 minutes with checkpoints under 5s</label></li>
-      <li><input type="checkbox" id="m7e2" data-track><label for="m7e2">Failure drill: kill a TaskManager; output is provably gap-free and duplicate-free</label></li>
-      <li><input type="checkbox" id="m7e3" data-track><label for="m7e3">Upgrade drill: savepoint, change the session gap to 20 minutes, restore, confirm state carried over</label></li>
-      <li><input type="checkbox" id="m7e4" data-track><label for="m7e4">Load drill: crank the generator 10x, find the backpressured operator, fix it by rescaling from a savepoint</label></li>
-      <li><input type="checkbox" id="m7e5" data-track><label for="m7e5">Write a one-page runbook for the pipeline as if handing it to your on-call rotation</label></li>
-    </ul>
+    <h3>The capstone: a sessionised revenue feed</h3>
+    <p>Assemble one pipeline from parts you've already built, then operate it through four drills. Target architecture:</p>
+<pre>ordergen.py ──▶ kafka:orders ─────────────┐
+                                          ├─▶ Flink SQL job:
+psql updates ─▶ postgres ─▶ CDC:customers ┘    temporal join (M6)
+                                               + 30-min session windows
+                                                 per customer (M2)
+                                               + revenue per segment/session
+                                          ──▶ upsert-kafka:segment_revenue (M5)
+                                               exactly-once, checkpointed (M4/M5)</pre>
+    <p>Build guidance rather than a spec dump: put every DDL in <code class="inline">init.sql</code> so the whole pipeline reproduces from one client launch; sessionise with the SESSION window TVF partitioned by customer; join before windowing so revenue lands in the segment that was true at order time; sink with a PRIMARY KEY of (segment, window_start). Aim for boringly green before you start breaking it.</p>
+
+    <div class="step">
+      <h4><span class="n">DRILL 1</span>Stability</h4>
+      <p>Run for 30 minutes. Pass criteria: zero restarts, checkpoint duration stable and under a few seconds, checkpointed size plateaued (if it climbs, find the unbounded state you've smuggled in; the usual suspect is a join without time bounds). Record your baseline numbers; drills are only meaningful against a baseline.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m7e1" data-track><label for="m7e1">30 minutes green with recorded baselines</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">DRILL 2</span>Failure</h4>
+      <p><code class="inline">docker kill</code> a TaskManager mid-flow, restore it, then audit the read_committed output for the affected windows: every (segment, session) present exactly once. You've done each half before; the point is proving the guarantees compose across a five-stage pipeline.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m7e2" data-track><label for="m7e2">Kill survived; output audited gap-free and duplicate-free</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">DRILL 3</span>Upgrade</h4>
+      <p>Business change request: session gap from 30 to 20 minutes. Stop with savepoint, edit the query, restore via <code class="inline">execution.state-recovery.path</code>, verify in-flight sessions carried across. Then write two sentences on which query changes this procedure could <em>not</em> absorb (structural changes that orphan operator state) because knowing the limits of your deploy mechanism is part of owning it.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m7e3" data-track><label for="m7e3">Live-ish config change deployed through a savepoint with state intact</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">DRILL 4</span>Load</h4>
+      <p>Drop ordergen's sleep to 10x the rate. Find the red operator in the backpressure view, walk backwards to the bottleneck, then fix it properly: stop with savepoint, resume with higher parallelism (<code class="inline">SET 'parallelism.default' = '4';</code> before re-running the INSERT), confirm the graph goes green and Kafka lag drains. You have now done, end to end and on a laptop, the fundamental production manoeuvre of stream operations.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m7e4" data-track><label for="m7e4">Bottleneck found under 10x load and fixed by rescaling from a savepoint</label></div>
+    </div>
+
+    <div class="step">
+      <h4><span class="n">DRILL 5</span>The runbook</h4>
+      <p>Write one page as if handing this pipeline to your on-call rotation: what it does in two sentences, the four dashboards/metrics to check first, the three most likely failures with their signatures and responses (source stall &rarr; watermark lag with zero throughput; state leak &rarr; checkpoint size trend; sink outage &rarr; checkpoint failures with backpressure from the sink), and the savepoint restart procedure verbatim. If you can't write the runbook, the drills aren't finished; if you can, you've extracted the course into an artifact you'll actually reuse.</p>
+      <div class="stepdone"><input type="checkbox" class="box" id="m7e5" data-track><label for="m7e5">Runbook written and filed where future-me will find it</label></div>
+    </div>
+
     <details class="selftest">
-      <summary>final self-test</summary>
+      <summary>final self-test (answers included, but think first)</summary>
       <ol>
-        <li>Explain your capstone's exactly-once story from source offset to committed sink transaction, with no hand-waving.</li>
-        <li>Which single metric would you page on first, and why that one?</li>
-        <li>Where would this pipeline break first at 100x scale, and what would you change?</li>
+        <li>Narrate your capstone's exactly-once story, source offset to visible sink record, no hand-waving.
+          <span class="ans">Kafka offsets are captured in each checkpoint alongside all operator state (join versions, session windows) via aligned barriers; the sink writes into a Kafka transaction committed on checkpoint completion; consumers read committed only. On failure: restore state, seek checkpointed offsets, replay; uncommitted transactions from the dead attempt are aborted and fenced by transactional id, so replayed output replaces rather than duplicates.</span></li>
+        <li>You get one pageable metric. Which and why?
+          <span class="ans">Watermark lag on the final operator: it composes almost every failure (stalled source, backpressure, restart loops, stuck dimension) into the one number the business feels: how stale is the output. Checkpoint failure count is the defensible runner-up.</span></li>
+        <li>At 100x, what breaks first in this design and what changes?
+          <span class="ans">Likely the single-node externals (Kafka, Postgres WAL/slot throughput) before Flink; within Flink, per-customer session state and the versioned join state force RocksDB/disaggregated state, higher max-parallelism set up front, and the JDBC lookup pattern (if used) needs caching or a different dimension strategy.</span></li>
       </ol>
     </details>
   </div>
@@ -652,15 +1435,15 @@ env.execute("hello_datastream")</pre>
 </main>
 
 <footer class="finish">
-  <h2 id="finishLine">The stream never ends, but the plan does.</h2>
-  <p>When every box above is ticked you have covered more Flink, hands-on, than most people running it in production. Natural next currents: Flink on Kubernetes with the operator, Paimon or Iceberg as a streaming lakehouse layer, and PyFlink UDFs at scale.</p>
+  <h2 id="finishLine">The stream never ends, but the course does.</h2>
+  <p>When every box is ticked you have run more Flink, hands-on, than most people operating it in production. Natural next currents: Flink on Kubernetes with the operator, Paimon or Iceberg as a streaming lakehouse layer, and PyFlink UDFs at scale.</p>
 </footer>
-
 </div>
+
 
 <script>
 (function(){
-  var KEY = 'flink-study-plan-v1';
+  var KEY = 'flink-study-plan-v2';
   var boxes = Array.prototype.slice.call(document.querySelectorAll('input[data-track]'));
   var fill = document.getElementById('barFill');
   var wm = document.getElementById('barWm');
@@ -673,13 +1456,14 @@ env.execute("hello_datastream")</pre>
   }
   function save(state){
     try { localStorage.setItem(KEY, JSON.stringify(state)); }
-    catch(e){ /* storage unavailable (e.g. file:// in some browsers); ticks still work for this session */ }
+    catch(e){ /* storage unavailable; ticks still work for this session */ }
   }
 
   function render(){
     var done = 0;
     boxes.forEach(function(b){
-      b.closest('li').classList.toggle('checked', b.checked);
+      var row = b.closest('li') || b.closest('.stepdone');
+      if(row) row.classList.toggle('checked', b.checked);
       if(b.checked) done++;
     });
     var total = boxes.length;
@@ -688,13 +1472,12 @@ env.execute("hello_datastream")</pre>
     wm.style.left = Math.max(p, 1) + '%';
     pct.textContent = done + ' / ' + total + ' \u00b7 ' + p + '%';
 
-    // per-module progress + node styling
     document.querySelectorAll('.module').forEach(function(mod){
-      var mBoxes = mod.querySelectorAll('input[data-track]');
+      var mAll = mod.querySelectorAll('input[data-track]');
       var mDone = mod.querySelectorAll('input[data-track]:checked').length;
       var label = mod.querySelector('[data-modprog]');
-      if(label) label.textContent = mDone + ' of ' + mBoxes.length + ' complete';
-      mod.classList.toggle('done', mBoxes.length > 0 && mDone === mBoxes.length);
+      if(label) label.textContent = mDone + ' of ' + mAll.length + ' complete';
+      mod.classList.toggle('done', mAll.length > 0 && mDone === mAll.length);
     });
 
     if(total > 0 && done === total){
@@ -702,7 +1485,6 @@ env.execute("hello_datastream")</pre>
     }
   }
 
-  // init from storage
   var state = load();
   boxes.forEach(function(b){
     if(state[b.id]) b.checked = true;
@@ -724,5 +1506,6 @@ env.execute("hello_datastream")</pre>
   render();
 })();
 </script>
+
 </body>
 </html>
